@@ -13,24 +13,24 @@ Proyecto para consultar el equipo audiovisual y auxiliar en la generación de fo
 Instalar dependencias:
 
 ```bash
-npm install
+yarn install
 ```
 
 Iniciar ambiente de desarrollo:
 
 ```bash
-npm run dev
+yarn dev
 ```
 Probar producción localmente:
 
 ```bash
-npm run preview
+yarn preview
 ```
 
 Compilación para producción:
 
 ```bash
-npm run build
+yarn build
 ```
 
 ## Variables de entorno
