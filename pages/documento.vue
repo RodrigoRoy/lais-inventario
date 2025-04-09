@@ -41,28 +41,28 @@ function createDocument(text) {
                     new TableCell({
                         width: {
                         size: 3010,
-                        type: WidthType.PERCENTAGE,
+                        type: WidthType.DXA,
                         },
                         children: [new Paragraph("Hola")]
                     }),
                     new TableCell({
                         width: {
                         size: 2000,
-                        type: WidthType.PERCENTAGE,
+                        type: WidthType.DXA,
                         },
                         children: [new Paragraph("Mundo")]
                     }),
                     new TableCell({
                         width: {
                         size: 2000,
-                        type: WidthType.PERCENTAGE,
+                        type: WidthType.DXA,
                         },
                         children: [new Paragraph("Foo")]
                     }),
                     new TableCell({
                         width: {
                         size: 2000,
-                        type: WidthType.PERCENTAGE,
+                        type: WidthType.DXA,
                         },
                         children: [new Paragraph("Bar")]
                     }),
@@ -73,28 +73,28 @@ function createDocument(text) {
                     new TableCell({
                         width: {
                         size: 3010,
-                        type: WidthType.PERCENTAGE,
+                        type: WidthType.DXA,
                         },
                         children: [new Paragraph("Hola2")]
                     }),
                     new TableCell({
                         width: {
                         size: 2000,
-                        type: WidthType.PERCENTAGE,
+                        type: WidthType.DXA,
                         },
                         children: [new Paragraph("Mundo2")]
                     }),
                     new TableCell({
                         width: {
                         size: 2000,
-                        type: WidthType.PERCENTAGE,
+                        type: WidthType.DXA,
                         },
                         children: [new Paragraph("Foo2")]
                     }),
                     new TableCell({
                         width: {
                         size: 2000,
-                        type: WidthType.PERCENTAGE,
+                        type: WidthType.DXA,
                         },
                         children: [new Paragraph("Bar2")]
                     }),

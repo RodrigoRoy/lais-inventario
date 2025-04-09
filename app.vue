@@ -21,5 +21,10 @@ const navBar = ref([
     icon: 'i-mdi-video-input-component',
     to: '/formulario',
   },
+  {
+    label: 'Documento',
+    icon: 'i-mdi-file-document',
+    to: '/documento',
+  },
 ])
 </script>
