@@ -28,35 +28,20 @@
         </div>
     </div>
 
-    <!-- Lista de equipo audiovisual -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-        <div v-for="equipo in inventario.list" :key="equipo.Id">
-            <!-- Card para cada equipo audiovisual -->
-            <UCard class="relative h-64 border-gray-700 bg-gray-800 border rounded-lg shadow-xl overflow-hidden cursor-pointer group transition-all duration-300 hover:scale-105" :style="{ backgroundImage: `url(${equipo.Imagen ? equipo.Imagen[0].thumbnails.card_cover.signedUrl : ''})`, backgroundSize: 'cover', backgroundPosition: 'center' }" @click="toggleSaved(equipo.Id)">
-                
-                <!-- Icono para mostrar que se ha seleccionado en esquina superior derecha -->
-                <div class="absolute top-1 right-1">
-                    <Icon v-if="savedItems.has(equipo.Id)" name="mdi:bookmark" class=" text-2xl"/>
-                </div>
-                
-                <!-- Datos del equipo en la parte inferior -->
-                <div class="absolute bottom-2 text-start">
-                    <div class="backdrop-blur-sm rounded-b-lg px-1">
-                        <p class="text-sm font-light">
-                            {{ equipo.Infraestructura }}
-                        </p>
-                        <p class="text-md -mt-1">
-                            {{ equipo.Nombre || '(Sin nombre)' }}
-                        </p>
-                    </div>
-                    <!-- Etiqueta del tipo de equipo -->
-                    <UBadge size="md" variant="subtle" :icon="assignIcon(equipo.Uso)" class="text-gray-800 rounded-full" :class="assignColor(equipo.Uso)">
-                        {{ equipo.Uso || 'Desconocido' }}
-                    </UBadge>
-                </div>
-            </UCard>
-        </div>
-    </div>
+    <!-- <div class="flex px-4 py-3.5 border-b border-(--ui-border-accented)">
+      <UInput
+        :model-value="table?.tableApi?.getColumn('email')?.getFilterValue() as string"
+        class="max-w-sm"
+        placeholder="Filter emails..."
+        @update:model-value="table?.tableApi?.getColumn('email')?.setFilterValue($event)"
+      />
+    </div> -->
+
+    <UTable :data="inventario.list" :columns="columnas" v-model:row-selection="rowSelection" @select="onSelect" v-model:column-filters="columnFilters" class="flex-1 cursor-pointer">
+        <template #Imagen-cell="{ row }">
+            <img :src="row.original.Imagen ? row.original.Imagen[0].thumbnails.small.signedUrl : '/perrito.jpeg'" class="rounded"/>
+        </template>
+    </UTable>
 </template>
 
 <script setup>
@@ -72,7 +57,73 @@ const { data:inventario } = await useFetch('https://app.nocodb.com/api/v2/tables
     }
 })
 
-// Datos para el calendario (TO DO: Allow spanish)
+const UCheckbox = resolveComponent('UCheckbox')
+
+// Lista del equipo audiovisual seleccionado. Según la definición en base de datos
+const equipoSeleccionado = computed(() => {
+    const listaEquipo = []
+    for(let i in rowSelection.value)
+        listaEquipo.push(inventario.value.list[i])
+    return listaEquipo
+})
+
+const columnas = [
+    {
+        // accessorKey: 'Id',
+        id: 'select',
+        header: 'Selección',
+        cell: ({ row }) => h(UCheckbox, {
+            modelValue: row.getIsSelected(),
+            'onUpdate:modelValue': (value) => row.toggleSelected(!!value),
+            'aria-label': 'Seleccionar fila'
+        })
+    },
+    {
+        accessorKey: 'Nombre',
+        header: 'Nombre',
+    },
+    {
+        accessorKey: 'Uso',
+        header: 'Uso',
+        cell: ({ row }) => h('div', {class: `inline-flex items-center rounded-md ${assignColor(row.getValue('Uso'))} px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-gray-500/10 ring-inset`}, row.getValue('Uso') || 'Desconocido')
+    },
+    {
+        accessorKey: 'Infraestructura',
+        header: 'Tipo',
+    },
+    {
+        accessorKey: 'Número de serie',
+        header: '# Serie',
+    },
+    {
+        accessorKey: 'Número de inventario',
+        header: '# Inventario',
+    },
+    {
+        accessorKey: 'Imagen',
+    }
+]
+
+// Objeto con los índices del equipo seleccionado en <UTable>
+const rowSelection = ref({})
+
+
+/**
+ * Selecciona un equipo audiovisual. Determina el comportamiento del evento
+ * select en cada fila de la tabla.
+ * @param row Fila de la table
+ * @param event Evento de select
+ */
+function onSelect(row, event) {
+  row.toggleSelected(!row.getIsSelected())
+}
+
+const columnFilters = ref([
+  {
+  }
+])
+
+// Datos para el calendario
 const df = new DateFormatter('es-US', {
   dateStyle: 'medium'
 })
@@ -84,20 +135,6 @@ const calendar = shallowRef(new CalendarDate(2025, 3, 27))
 const formData = reactive({
     nombre: '',
 })
-
-// Estructura para guardar los equipos marcados
-const savedItems = ref(new Set())
-
-/**
- * Quita o agrega un equipo según su id
- * @param {string} id Id del equipo audiovisual
- */
-const toggleSaved = (id) => {
-    if (savedItems.value.has(id))
-        savedItems.value.delete(id)
-    else
-        savedItems.value.add(id)
-}
 
 /**
  * Asigna un color según el tipo de uso del equipo audiovisual
@@ -125,19 +162,19 @@ const assignColor = (uso) => {
  * @param {string} uso Texto que represnta el tipo de equipo
  * @return {string} Nombre del icono en formato NuxtUI
  */
-const assignIcon = (uso) => {
-    const icon = {
-        'Fotografía': 'i-mdi-camera',
-        'Video': 'i-mdi-video',
-        'Audio': 'i-mdi-volume',
-        'Cargador': 'i-mdi-power-plug-battery',
-        'Iluminación': 'i-mdi-lightbulb',
-        'Dictado / transcripción': 'i-mdi-message-text',
-        'Reproductor': 'i-mdi-disc-player',
-        'Cómputo': 'i-mdi-laptop',
-        'Batería': 'i-mdi-battery',
-        'Extensiones': 'i-mdi-power-plug',
-    }
-    return icon[uso] || 'i-mdi-help-rhombus'
-}
+// const assignIcon = (uso) => {
+//     const icon = {
+//         'Fotografía': 'i-mdi-camera',
+//         'Video': 'i-mdi-video',
+//         'Audio': 'i-mdi-volume',
+//         'Cargador': 'i-mdi-power-plug-battery',
+//         'Iluminación': 'i-mdi-lightbulb',
+//         'Dictado / transcripción': 'i-mdi-message-text',
+//         'Reproductor': 'i-mdi-disc-player',
+//         'Cómputo': 'i-mdi-laptop',
+//         'Batería': 'i-mdi-battery',
+//         'Extensiones': 'i-mdi-power-plug',
+//     }
+//     return icon[uso] || 'i-mdi-help-rhombus'
+// }
 </script>
