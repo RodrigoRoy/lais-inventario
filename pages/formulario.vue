@@ -37,14 +37,7 @@
 import { CalendarDate, DateFormatter, getLocalTimeZone } from '@internationalized/date'
 
 // Información de base de datos
-const { data:inventario } = await useFetch('https://app.nocodb.com/api/v2/tables/mcc4adsnscn92bb/records/', {
-    headers: {
-        'xc-token': process.env.NOCODB_TOKEN
-    },
-    query: {
-        limit: 100
-    }
-})
+const { data: inventario } = await useFetch('/api/equipo')
 
 // Datos para el calendario
 const dateFormat = new DateFormatter('es-MX', { dateStyle: 'medium' })
