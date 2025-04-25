@@ -22,6 +22,11 @@ const navBar = ref([
     to: '/formulario',
   },
   {
+    label: 'Preliminar',
+    icon: 'i-mdi-clipboard-check-outline',
+    to: '/preliminar',
+  },
+  {
     label: 'Documento',
     icon: 'i-mdi-file-document',
     to: '/documento',
