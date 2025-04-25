@@ -1,3 +1,15 @@
+/**
+ * Información completa de una salida de equipo audiovisual
+ * @return Object - Esquema completo del registro/record solicitado
+ * {
+ *  "Id": 0,
+ *  "Fecha": "string",
+ *  "Lista de equipo": 0,
+ *  "Usos": "string",
+ *  "list": [{Equipo audiovisual}]
+ * }
+ */
+
 export default defineEventHandler(async (event) => {
     // Id de la "Salida" solicitada
     const recordId = getRouterParam(event, 'recordId')

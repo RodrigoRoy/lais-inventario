@@ -1,3 +1,34 @@
+/**
+ * Crear una nueva Salida y almacenarla en base de datos.
+ * @param Object Información sobre la salida
+ * {
+ *  "Fecha": "string",
+ *  "Usos": "string",
+ *  "Equipo": [
+ *      {
+ *          "Id": 3
+ *      },
+ *      {
+ *          "Id": 4
+ *      }
+ *  ]
+ * }
+ * @return Object Incluye Id del record, copia de la lista de equipo y 
+ * boolean que indica si son correctos los "Link" de la lista de equipo
+ * {
+ *     "Id": 10,
+ *     "updated": "true",
+ *     "list": [
+ *         {
+ *             "Id": 3
+ *         },
+ *         {
+ *             "Id": 4
+ *         }
+ *     ]
+ * }
+ */
+
 export default defineEventHandler(async (event) => {
     const { Fecha, Usos, Equipo } = await readBody(event)
 
