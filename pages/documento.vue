@@ -4,107 +4,119 @@
         Documento
     </h1>
 
-    <!-- Formulario de prueba -->
     <div class="flex flex-col sm:flex-row gap-4 justify-center sm:text-center my-4">
-        <!-- Nombre -->
-        <div class="sm:basis-auto px-4">
-            <UFormField label="Texto de prueba" name="responsable">
-                <UInput v-model="myText" size="xl" />
-            </UFormField>
-        </div>
-
         <!-- Generar documento docx -->
-        <UButton @click="createDocument(myText)">Crear documento</UButton>
+        <UButton @click="createDocument(salida)">Crear documento (Id 1)</UButton>
     </div>
-
-    
 </template>
 
 <script setup>
-import { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, WidthType } from 'docx'
+import { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, WidthType, HeadingLevel, AlignmentType, BorderStyle, ShadingType } from 'docx'
 import { saveAs } from 'file-saver'
 
-// Texto de prueba para incrustar en documento
-const myText = ref('Hola, mundo!')
+// Información de base de datos (este es un ejemplo con el registro con Id 1)
+const { data:salida } = await useFetch('/api/salidas/1')
 
 /**
  * Crea un documento de ejemplo, integrando texto arbitrario
- * @param text Cadena de texto arbitrario para integrar al documento
+ * @param {Object} salida Representa una salida de equipo, según el esquema en base de datos
  */
-function createDocument(text) {
-    // Definición de una tabla
-    const table = new Table({
-        columnWidths: [3010, 2000, 2000, 2000],
-        rows: [
-            new TableRow({
-                children: [
-                    new TableCell({
-                        width: {
-                        size: 3010,
+function createDocument(salida) {
+    // Definición de las filas de equipo audiovisual
+    let equipoRows = [
+        // Encabezado de la tabla
+        new TableRow({
+            tableHeader: true,
+            children: [
+                new TableCell({
+                    width: {
+                        size: 2200,
                         type: WidthType.DXA,
-                        },
-                        children: [new Paragraph("Hola")]
-                    }),
-                    new TableCell({
-                        width: {
-                        size: 2000,
+                    },
+                    shading: {
+                        fill: "e0e0e0",
+                        type: ShadingType.CLEAR,
+                        color: "auto",
+                    },
+                    children: [new Paragraph("Cantidad")]
+                }),
+                new TableCell({
+                    width: {
+                        size: 2300,
                         type: WidthType.DXA,
-                        },
-                        children: [new Paragraph("Mundo")]
-                    }),
-                    new TableCell({
-                        width: {
-                        size: 2000,
+                    },
+                    shading: {
+                        fill: "e0e0e0",
+                        type: ShadingType.CLEAR,
+                        color: "auto",
+                    },
+                    children: [new Paragraph("Descripción breve")]
+                }),
+                new TableCell({
+                    width: {
+                        size: 2300,
                         type: WidthType.DXA,
-                        },
-                        children: [new Paragraph("Foo")]
-                    }),
-                    new TableCell({
-                        width: {
-                        size: 2000,
+                    },
+                    shading: {
+                        fill: "e0e0e0",
+                        type: ShadingType.CLEAR,
+                        color: "auto",
+                    },
+                    children: [new Paragraph("No. Serie (Opcional)")]
+                }),
+                new TableCell({
+                    width: {
+                        size: 2300,
                         type: WidthType.DXA,
-                        },
-                        children: [new Paragraph("Bar")]
-                    }),
-                ]
-            }),
-            new TableRow({
-                children: [
-                    new TableCell({
-                        width: {
-                        size: 3010,
-                        type: WidthType.DXA,
-                        },
-                        children: [new Paragraph("Hola2")]
-                    }),
-                    new TableCell({
-                        width: {
-                        size: 2000,
-                        type: WidthType.DXA,
-                        },
-                        children: [new Paragraph("Mundo2")]
-                    }),
-                    new TableCell({
-                        width: {
-                        size: 2000,
-                        type: WidthType.DXA,
-                        },
-                        children: [new Paragraph("Foo2")]
-                    }),
-                    new TableCell({
-                        width: {
-                        size: 2000,
-                        type: WidthType.DXA,
-                        },
-                        children: [new Paragraph("Bar2")]
-                    }),
-                ]
-            }),
-        ]
-    })
+                    },
+                    shading: {
+                        fill: "e0e0e0",
+                        type: ShadingType.CLEAR,
+                        color: "auto",
+                    },
+                    children: [new Paragraph("No. Inventario")]
+                }),
+            ]
+        }),
+    ]
 
-    // Documentos pueden contener múltiples secciones
-    // Este ejemplo solo contiene una sección
+    // Agregar filas con la información de cada equipo audiovisual
+    for(const equipo of salida.list){
+        equipoRows.push(new TableRow({
+            children: [
+                new TableCell({
+                    width: {
+                        size: 2200,
+                        type: WidthType.DXA,
+                    },
+                    children: [new Paragraph(`1`)]
+                }),
+                new TableCell({
+                    width: {
+                        size: 2300,
+                        type: WidthType.DXA,
+                    },
+                    children: [new Paragraph(`${equipo.Nombre}`)]
+                }),
+                new TableCell({
+                    width: {
+                        size: 2300,
+                        type: WidthType.DXA,
+                    },
+                    children: [new Paragraph(`${equipo["Número de serie"] ? equipo["Número de serie"] : ''}`)]
+                }),
+                new TableCell({
+                    width: {
+                        size: 2300,
+                        type: WidthType.DXA,
+                    },
+                    children: [new Paragraph(`${equipo["Número de inventario"] ? equipo["Número de inventario"] : ''}`)]
+                }),
+            ]
+        }))
+    }
+
+    // Definición del documento, que incluye la tabla de equipo
     const doc = new Document({
         sections: [
             {
@@ -113,24 +125,207 @@ function createDocument(text) {
                     new Paragraph({
                         children: [
                             new TextRun({
-                                text: "Lorem ipsum ",
+                                text: "Instituto de Investigaciones Dr. José Ma. Luis Mora",
+                                color: "000000",
+                            })
+                        ],
+                        heading: HeadingLevel.HEADING_2,
+                        alignment: AlignmentType.CENTER,
+                    }),
+                    new Paragraph(""),
+                    new Paragraph({
+                        children: [
+                            new TextRun({
+                                text: "Formato para bienes en tránsito",
+                                color: "000000",
+                            })
+                        ],
+                        heading: HeadingLevel.HEADING_1,
+                        alignment: AlignmentType.CENTER,
+                        color: "000000",
+                    }),
+                    new Paragraph(""),
+                    new Paragraph(""),
+                    new Paragraph({
+                        children: [
+                            new TextRun({
+                                text: "Fecha: 8 de mayo de 2025",
                                 bold: true,
                             }),
-                            new TextRun("dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. "),
-                            new TextRun("Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos."),
+                        ],
+                        alignment: AlignmentType.RIGHT,
+                    }),
+                    new Paragraph(""),
+                    new Paragraph({
+                        children: [
+                            new TextRun({
+                                text: "Nombre del solicitante: ",
+                                bold: true,
+                            }),
+                            new TextRun("Felipe Morales Leal"),
                         ],
                     }),
                     new Paragraph({
                         children: [
-                            new TextRun(`\n\r${text}\n\r`), // Integración de texto arbitrario
-                        ]
+                            new TextRun({
+                                text: "Origen: ",
+                                bold: true,
+                            }),
+                            new TextRun("Laboratorio Audiovisual de Investigación Social"),
+                        ],
                     }),
                     new Paragraph({
                         children: [
-                            new TextRun('\tLorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.'),
+                            new TextRun({
+                                text: "Sede: ",
+                                bold: true,
+                            }),
+                            new TextRun("Poussin"),
+                        ],
+                    }),
+                    new Paragraph(""),
+                    
+                    // Lista de equipo audiovisual
+                    new Table({
+                        columnWidths: [2200, 2300, 2300, 2300],
+                        rows: equipoRows,
+                    }),
+
+                    new Paragraph(""),
+                    new Paragraph({
+                        children: [
+                            new TextRun({
+                                text: "Observaciones: ",
+                                bold: true,
+                            }),
+                        ],
+                    }),
+                    new Paragraph(""),
+                    new Table({
+                        columnWidths: [9100],
+                        rows: [
+                            new TableRow({
+                                children: [
+                                    new TableCell({
+                                        width: {
+                                        size: 9100,
+                                        type: WidthType.DXA,
+                                        },
+                                        children: [new Paragraph({
+                                            text: "Entrevista",
+                                            alignment: AlignmentType.CENTER,
+                                        })]
+                                    }),
+                                ]
+                            }),
                         ]
                     }),
-                    table,
+
+                    // new Paragraph(""),
+                    // new Paragraph(""),
+                    
+                    // Page break (dos saltos de línea)
+                    new Paragraph({
+                        children: [
+                            new TextRun({
+                                text: "",
+                                break: 2,
+                            })
+                        ]
+                    }),
+
+                    // Firmas finales
+                    new Table({
+                        columnWidths: [4550, 4550],
+                        rows: [
+                            new TableRow({
+                                children: [
+                                    new TableCell({
+                                        width: {
+                                            size: 4550,
+                                            type: WidthType.DXA,
+                                        },
+                                        borders: {
+                                            top: {
+                                                style: BorderStyle.NIL,
+                                                size: 0,
+                                            },
+                                            bottom: {
+                                                style: BorderStyle.NIL,
+                                                size: 0,
+                                            },
+                                            left: {
+                                                style: BorderStyle.NIL,
+                                                size: 0,
+                                            },
+                                            right: {
+                                                style: BorderStyle.NIL,
+                                                size: 0,
+                                            },
+                                        },
+                                        children: [
+                                            new Paragraph({
+                                                text: "Portador del bien y autorización",
+                                                alignment: AlignmentType.CENTER,
+                                            }),
+                                            new Paragraph(""),
+                                            new Paragraph(""),
+                                            new Paragraph(""),
+                                            new Paragraph({
+                                                text: "____________________________",
+                                                alignment: AlignmentType.CENTER,
+                                            }),
+                                            new Paragraph({
+                                                text: "Felipe Morales Leal",
+                                                alignment: AlignmentType.CENTER,
+                                            }),
+                                        ],
+                                    }),
+                                    new TableCell({
+                                        width: {
+                                            size: 4550,
+                                            type: WidthType.DXA,
+                                        },
+                                        borders: {
+                                            top: {
+                                                style: BorderStyle.NIL,
+                                                size: 0,
+                                            },
+                                            bottom: {
+                                                style: BorderStyle.NIL,
+                                                size: 0,
+                                            },
+                                            left: {
+                                                style: BorderStyle.NIL,
+                                                size: 0,
+                                            },
+                                            right: {
+                                                style: BorderStyle.NIL,
+                                                size: 0,
+                                            },
+                                        },
+                                        children: [
+                                            new Paragraph({
+                                                text: "Personal de vigilancia",
+                                                alignment: AlignmentType.CENTER,
+                                            }),
+                                            new Paragraph(""),
+                                            new Paragraph(""),
+                                            new Paragraph(""),
+                                            new Paragraph({
+                                                text: "____________________________",
+                                                alignment: AlignmentType.CENTER,
+                                            }),
+                                            new Paragraph({
+                                                text: "Nombre y firma",
+                                                alignment: AlignmentType.CENTER,
+                                            }),
+                                        ],
+                                    }),
+                                ]
+                            }),
+                        ]
+                    })
                 ],
             },
         ],
@@ -138,7 +333,7 @@ function createDocument(text) {
 
     // Exportar el archivo como blob para descargar
     Packer.toBlob(doc).then((blob) => {
-        saveAs(blob, "MiDocumento.docx")
+        saveAs(blob, `Formato para bienes - id${salida.Id}.docx`)
     })
 }
 </script>
