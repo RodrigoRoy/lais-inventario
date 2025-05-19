@@ -1,5 +1,5 @@
 <template>
-    <UTable :data="lista" :columns="columnas" v-model:row-selection="rowSelection" @select="onSelect" v-model:column-filters="columnFilters" class="flex-1 cursor-pointer">
+    <UTable :data="lista" :columns="columnas" v-model:row-selection="rowSelection" @select="onSelect" v-model:column-filters="columnFilters" sticky class="flex-1 cursor-pointer max-h-[75vh]">
 
         <!-- Columna "Selección" (checkbox) -->
         <template v-if="props.cantidad" #Cantidad-cell="{ row }">
