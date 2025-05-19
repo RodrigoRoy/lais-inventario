@@ -1,5 +1,5 @@
 <template>
-    <UTable :data="lista" :columns="columnas" v-model:row-selection="rowSelection" @select="onSelect" v-model:column-filters="columnFilters" sticky class="flex-1 cursor-pointer max-h-[75vh]">
+    <UTable :data="lista" :columns="columnas" v-model:row-selection="rowSelection" @select="onSelect" v-model:column-filters="columnFilters" v-model:sorting="sorting" sticky class="flex-1 cursor-pointer pointer max-h-[75vh]">
 
         <!-- Columna "Selección" (checkbox) -->
         <template v-if="props.cantidad" #Cantidad-cell="{ row }">
@@ -31,6 +31,7 @@ const props = defineProps({
 })
 
 const UCheckbox = resolveComponent('UCheckbox')
+const UButton = resolveComponent('UButton')
 
 // Lista del equipo audiovisual seleccionado. Según la definición en base de datos
 const equipoSeleccionado = computed(() => {
@@ -45,7 +46,7 @@ let columnas = [
     {
         accessorKey: 'Id',
         id: 'select',
-        header: 'Selección',
+        header: ({ column }) => getHeader(column, 'Selección'),
         cell: ({ row }) => h(UCheckbox, {
             modelValue: row.getIsSelected(),
             'onUpdate:modelValue': (value) => row.toggleSelected(!!value),
@@ -54,16 +55,16 @@ let columnas = [
     },
     {
         accessorKey: 'Nombre',
-        header: 'Nombre',
+        header: ({ column }) => getHeader(column, 'Nombre')
     },
     {
         accessorKey: 'Uso',
-        header: 'Uso',
+        header: ({ column }) => getHeader(column, 'Uso'),
         cell: ({ row }) => h('div', {class: `inline-flex items-center rounded-md ${assignColor(row.getValue('Uso'))} px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-gray-500/10 ring-inset`}, row.getValue('Uso') || 'Desconocido')
     },
     {
         accessorKey: 'Infraestructura',
-        header: 'Tipo',
+        header: ({ column }) => getHeader(column, 'Tipo'),
     },
 ]
 
@@ -81,6 +82,36 @@ if(props.cantidad) columnas.push({accessorKey: 'Cantidad', header: 'Cantidad' })
 
 // Objeto con los índices del equipo seleccionado en <UTable>
 const rowSelection = ref({})
+
+// Objeto para la ordenación de una columna
+const sorting = ref([
+    {
+        id: 'Selección',
+        desc: false
+    }
+])
+
+/**
+ * Ordena una columna de forma ascendente o descendente.
+ * @param column Los datos de la columna
+ * @param label La etiqueta de la columna (accesorKey)
+ */
+function getHeader(column, label) {
+    const isSorted = column.getIsSorted()
+
+    return h(UButton, {
+                color: 'neutral',
+                variant: 'ghost',
+                label,
+                icon: isSorted 
+                    ? isSorted === 'asc'
+                        ? 'i-lucide-arrow-up-narrow-wide'
+                        : 'i-lucide-arrow-down-wide-narrow'
+                    : 'i-lucide-arrow-up-down',
+                class: '-mx-2.5 data-[state=open]:bg-elevated',
+                onClick: () => column.toggleSorting(column.getIsSorted() === 'asc')
+            })
+}
 
 /**
  * Selecciona un equipo audiovisual. Determina el comportamiento del evento
