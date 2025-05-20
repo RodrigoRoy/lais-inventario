@@ -1,6 +1,6 @@
 # Equipo audiovisual del LAIS
 
-Proyecto para consultar el equipo audiovisual del Laboratorio Audiovisual de Investigación Social (LAIS) y generar documentos de salidas de equipo para uso institucional.
+Proyecto para consultar el equipo audiovisual del Laboratorio Audiovisual de Investigación Social (LAIS) y generar documentos de salidas de equipo para uso interno del laboratorio.
 
 ## Herramientas empleadas
 
