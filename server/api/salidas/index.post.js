@@ -4,6 +4,7 @@
  * {
  *  "Fecha": "string",
  *  "Usos": "string",
+ *  "Responsable": string,
  *  "Equipo": [
  *      {
  *          "Id": 3

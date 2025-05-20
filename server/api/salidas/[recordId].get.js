@@ -6,6 +6,7 @@
  *  "Fecha": "string",
  *  "Lista de equipo": 0,
  *  "Usos": "string",
+ *  "Responsable": string,
  *  "list": [{Equipo audiovisual}]
  * }
  */
