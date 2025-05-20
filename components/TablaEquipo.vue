@@ -1,16 +1,26 @@
 <template>
-    <UTable :data="lista" :columns="columnas" v-model:row-selection="rowSelection" @select="onSelect" v-model:column-filters="columnFilters" v-model:sorting="sorting" sticky class="flex-1 cursor-pointer pointer max-h-[75vh]">
+    <div class="flex flex-col flex-1" w-full>
+        <div class="flex px-4 py-3.5 border-b border-accented">
+        <UInput v-model="filtroGlobal" class="max-w-sm" placeholder="Buscar..." />
+        </div>
 
-        <!-- Columna "Selección" (checkbox) -->
-        <template v-if="props.cantidad" #Cantidad-cell="{ row }">
-            <UInputNumber v-model="row.original.Cantidad" :default-value="1" :min="0" :max="3" size="sm" />
-        </template>
 
-        <!-- Columna "Imagen" -->
-        <template #Imagen-cell="{ row }">
-            <img :src="row.original.Imagen ? row.original.Imagen[0].thumbnails.small.signedUrl : '/perrito.jpeg'" class="rounded"/>
-        </template>
-    </UTable>
+        <UTable ref="tablaInventario" :data="lista" :columns="columnas" v-model:row-selection="rowSelection" @select="onSelect" v-model:global-filter="filtroGlobal" v-model:sorting="sorting" sticky class="flex-1 cursor-pointer pointer max-h-[75vh] table-fixed w-full">
+
+            <!-- Columna "Selección" (checkbox) -->
+            <template v-if="props.cantidad" #Cantidad-cell="{ row }">
+                <UInputNumber v-model="row.original.Cantidad" :default-value="1" :min="0" :max="3" size="sm" />
+            </template>
+
+            <!-- Columna "Imagen" -->
+            <template #Imagen-cell="{ row }">
+                 <div class="flex items-center justify-center h-full ">
+                     <img :src="row.original.Imagen ? row.original.Imagen[0].thumbnails.small.signedUrl : '/perrito.jpeg'" class="max-w-[200px] max-h-[200px] object-cover rounded shadow-sm"/>
+                 </div>
+            </template>
+
+        </UTable>
+    </div>
 </template>
 
 <script setup>
@@ -33,6 +43,11 @@ const props = defineProps({
 const UCheckbox = resolveComponent('UCheckbox')
 const UButton = resolveComponent('UButton')
 
+/**
+ * Sección de filtrado global
+ */
+const filtroGlobal = ref('')
+
 // Lista del equipo audiovisual seleccionado. Según la definición en base de datos
 const equipoSeleccionado = computed(() => {
     const listaEquipo = []
@@ -45,8 +60,8 @@ const equipoSeleccionado = computed(() => {
 let columnas = [
     {
         accessorKey: 'Id',
-        id: 'select',
-        header: ({ column }) => getHeader(column, 'Selección'),
+        id: 'Seleccion',
+        header: ({ column }) => getHeader(column, 'Seleccion'),
         cell: ({ row }) => h(UCheckbox, {
             modelValue: row.getIsSelected(),
             'onUpdate:modelValue': (value) => row.toggleSelected(!!value),
@@ -86,7 +101,7 @@ const rowSelection = ref({})
 // Objeto para la ordenación de una columna
 const sorting = ref([
     {
-        id: 'Selección',
+        id: 'Seleccion',
         desc: false
     }
 ])
@@ -98,6 +113,9 @@ const sorting = ref([
  */
 function getHeader(column, label) {
     const isSorted = column.getIsSorted()
+
+    // TODO:Ordenar por booleanos la selección
+    if (label === "Seleccion") return "Selección"
 
     return h(UButton, {
                 color: 'neutral',
