@@ -1,16 +1,18 @@
 <template>
     <div class="flex flex-col flex-1" w-full>
+        
+        EquipoSeleccionado (prueba-tablaEquipo): <br>
+        {{ equipoSeleccionado }}
+        
         <div class="flex px-4 py-3.5 border-b border-accented">
-        <UInput v-model="filtroGlobal" class="max-w-sm" placeholder="Buscar..." />
+
+            <div class="flex flex-col md:flex-row items-center gap-4 mb-4">
+                <UInput v-model="filtroGlobal" class="max-w-sm" placeholder="Buscar..." ></UInput>
+                <UButton color="success" variant="outline" size="sm" class="cursor-pointer" icon="mdi-keyboard-return" @click="actualizarListaEmit" >Emit</UButton>
+            </div>
         </div>
 
-
-        <UTable ref="tablaInventario" :data="lista" :columns="columnas" v-model:row-selection="rowSelection" @select="onSelect" v-model:global-filter="filtroGlobal" v-model:sorting="sorting" sticky class="flex-1 cursor-pointer pointer max-h-[75vh] table-fixed w-full">
-
-            <!-- Columna "Selección" (checkbox) -->
-            <template v-if="props.cantidad" #Cantidad-cell="{ row }">
-                <UInputNumber v-model="row.original.Cantidad" :default-value="1" :min="0" :max="3" size="sm" />
-            </template>
+        <UTable ref="tablaInventario" :data="lista" :columns="columnas" v-model:row-selection="rowSelection" @select="onSelect" v-model:global-filter="filtroGlobal" v-model:sorting="sorting" sticky class="flex-1 cursor-pointer pointer max-h-[75vh] table-fixed w-full " resizable  v-model:column-sizing="columnSizing">
 
             <!-- Columna "Imagen" -->
             <template #Imagen-cell="{ row }">
@@ -24,6 +26,7 @@
 </template>
 
 <script setup>
+
 /**
  * Propiedades del componente
  * @param lista Lista de equipo audiovisual (según DB)
@@ -38,22 +41,40 @@ const props = defineProps({
     cantidad: {type: Boolean},
     serie: {type: Boolean},
     inventario: {type: Boolean},
+    inventarioFinal: { type: Array, default: () => [] } // Lista final emit
 })
+
+/**
+ * Sección emit
+ */
+const emit = defineEmits(['update:inventarioFinal'])
+
+const actualizarListaEmit = () => {
+    console.log("Actualizando...")
+    emit('update:inventarioFinal', equipoSeleccionado.value)
+    console.log("Actualizado")
+}
 
 const UCheckbox = resolveComponent('UCheckbox')
 const UButton = resolveComponent('UButton')
+const UinputNumber = resolveComponent('UInputNumber')
 
 /**
  * Sección de filtrado global
  */
 const filtroGlobal = ref('')
 
+/**
+ * Tamaño columnas
+ */
+const columnSizing = ref({})
+
 // Lista del equipo audiovisual seleccionado. Según la definición en base de datos
 const equipoSeleccionado = computed(() => {
     const listaEquipo = []
     for(let i in rowSelection.value)
-        listaEquipo.push(lista.value[i])
-    return listaEquipo
+        listaEquipo.push(props.lista[i])
+        return listaEquipo
 })
 
 // Definición de las columnas para elemento <UTable>
@@ -62,38 +83,90 @@ let columnas = [
         accessorKey: 'Id',
         id: 'Seleccion',
         header: ({ column }) => getHeader(column, 'Seleccion'),
-        cell: ({ row }) => h(UCheckbox, {
-            modelValue: row.getIsSelected(),
-            'onUpdate:modelValue': (value) => row.toggleSelected(!!value),
-            'aria-label': 'Seleccionar fila'
-        })
+        cell: ({ row }) => {
+            const isSelected = row.getIsSelected()
+
+            return isSelected
+            ?   h(UinputNumber, {
+                    modelValue: row.original.Cantidad,
+                    'onUpdate:modelValue': (value) => {
+                        row.original.Cantidad = value
+                    },
+                    variant: "outline",
+                    placeholder: "0",
+                    min: 1,
+                    max: 10,
+                    size: 'sm',
+                    class: 'w-24',
+                    }, {
+                    decrement: () => h(UButton, {
+                    size: 'xs',
+                    icon: 'i-lucide-minus'
+                    }),
+                    increment: () => h(UButton, {
+                    size: 'xs',
+                    icon: 'i-lucide-plus'
+                    })
+                })
+            :   h(UCheckbox, {
+                    modelValue: isSelected,
+                    'onUpdate:modelValue': (value) => row.toggleSelected(!!value),
+                    'aria-label': 'Seleccionar fila',
+                })
+        },
+        width: 200
     },
     {
         accessorKey: 'Nombre',
-        header: ({ column }) => getHeader(column, 'Nombre')
+        id: 'Nombre',
+        header: ({ column }) => getHeader(column, 'Nombre'),
+        width: 200
     },
     {
         accessorKey: 'Uso',
+        id: 'Uso',
         header: ({ column }) => getHeader(column, 'Uso'),
-        cell: ({ row }) => h('div', {class: `inline-flex items-center rounded-md ${assignColor(row.getValue('Uso'))} px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-gray-500/10 ring-inset`}, row.getValue('Uso') || 'Desconocido')
+        cell: ({ row }) => h('div', {class: `inline-flex items-center rounded-md ${assignColor(row.getValue('Uso'))} px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-gray-500/10 ring-inset`}, row.getValue('Uso') || 'Desconocido'),
+        width: 2200
     },
     {
         accessorKey: 'Infraestructura',
+        id: 'Infraestructura',
         header: ({ column }) => getHeader(column, 'Tipo'),
+        width: 200
     },
 ]
 
-// Agregar columna serie, según props
-if(props.serie) columnas.push({accessorKey: 'Número de serie', header: '# Serie' })
-
-// Agregar columna inventario, según props
-if(props.inventario) columnas.push({accessorKey: 'Número de inventario', header: '# Inventario' })
+/**
+ *      ||| Sección de agregar columnas según props |||
+ */
 
 // Agregar columna de imagen
-columnas.push({accessorKey: 'Imagen'})
+columnas.push
+    ({
+        accessorKey: 'Imagen',
+        id: 'Imagen',
+        width: 200
+    })
 
-// Agregar columna cantidad, según props
-if(props.cantidad) columnas.push({accessorKey: 'Cantidad', header: 'Cantidad' })
+// Agregar columna serie, según props
+if(props.serie) columnas.push
+    ({
+        accessorKey: 'Número de serie', 
+        accessorKey: 'Número de serie', 
+        id: 'Número de serie', 
+        header: '# Serie',
+        width: 200
+    })
+
+// Agregar columna inventario, según props
+if(props.inventario) columnas.push
+    ({
+        accessorKey: 'Número de inventario', 
+        id: 'Número de inventario', 
+        header: '# Inventario',
+        width: 200
+    })
 
 // Objeto con los índices del equipo seleccionado en <UTable>
 const rowSelection = ref({})

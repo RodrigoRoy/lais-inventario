@@ -26,10 +26,13 @@
                 </UPopover>
             </UFormField>
         </div>
+
+        Ejemplo emit: <pre> {{ inventarioFinal }} </pre>
+
     </div>
 
     <!-- Lista de equipo audiovisual -->
-    <TablaEquipo :lista=inventario.list select serie inventario />
+    <TablaEquipo :lista=inventario.list select serie inventario v-model:inventarioFinal="inventarioFinal"/>
 
 </template>
 
@@ -39,6 +42,8 @@ import { CalendarDate, DateFormatter, getLocalTimeZone } from '@internationalize
 // Información de base de datos
 const { data: inventario } = await useFetch('/api/equipo')
 
+const inventarioFinal = ref([])
+
 // Datos para el calendario
 const dateFormat = new DateFormatter('es-MX', { dateStyle: 'medium' })
 const today = new Date()
@@ -46,6 +51,6 @@ const calendar = shallowRef(new CalendarDate(today.getFullYear(), today.getMonth
 
 // Datos del formulario
 const formData = reactive({
-    nombre: '',
+    nombre: 'Rodrigo Colin Rivera',
 })
 </script>
