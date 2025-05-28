@@ -31,7 +31,7 @@
  */
 
 export default defineEventHandler(async (event) => {
-    const { Fecha, Usos, Equipo } = await readBody(event)
+    const { Fecha, Usos, Responsable, Equipo } = await readBody(event)
 
     // Crear registro de nueva "Salida"
     const newSalida = await $fetch(`${process.env.NOCODB_URL}/api/v2/tables/mxylas8z9l8ohr1/records/`, {
@@ -42,6 +42,7 @@ export default defineEventHandler(async (event) => {
         body: {
             "Fecha": Fecha,
             "Usos": Usos,
+            "Responsable": Responsable
         }
     })
 

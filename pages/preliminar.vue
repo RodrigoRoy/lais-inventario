@@ -23,5 +23,5 @@
 const route = useRoute()
 
 // Información de base de datos
-const { data: salida, error } = await useFetch(`/api/salidas/${route.query.record}`)
+const { data: salida, error } = await useFetch(`/api/salidas/${route.query.Id}`)
 </script>

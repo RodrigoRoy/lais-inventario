@@ -1,32 +1,24 @@
 <template>
     <div class="flex flex-col flex-1" w-full>
         
-        EquipoSeleccionado (prueba-tablaEquipo): <br>
-        {{ equipoSeleccionado }}
-        
-        <div class="flex px-4 py-3.5 border-b border-accented">
-
+        <div class="flex pr-4 pt-4 border-b border-accented">
             <div class="flex flex-col md:flex-row items-center gap-4 mb-4">
-                <UInput v-model="filtroGlobal" class="max-w-sm" placeholder="Buscar..." ></UInput>
-                <UButton color="success" variant="outline" size="sm" class="cursor-pointer" icon="mdi-keyboard-return" @click="actualizarListaEmit" >Emit</UButton>
+                <UInput v-model="filtroGlobal" icon="i-mdi-magnify" class="max-w-sm" placeholder="Buscar..." ></UInput>
             </div>
         </div>
 
-        <UTable ref="tablaInventario" :data="lista" :columns="columnas" v-model:row-selection="rowSelection" @select="onSelect" v-model:global-filter="filtroGlobal" v-model:sorting="sorting" sticky class="flex-1 cursor-pointer pointer max-h-[75vh] table-fixed w-full " resizable  v-model:column-sizing="columnSizing">
-
+        <UTable :data="lista" :columns="columnas" v-model:row-selection="rowSelection" @select="onSelect" v-model:global-filter="filtroGlobal" v-model:sorting="sorting" sticky class="flex-1 cursor-pointer pointer max-h-[70vh] table-fixed w-full" resizable>
             <!-- Columna "Imagen" -->
             <template #Imagen-cell="{ row }">
                  <div class="flex items-center justify-center h-full ">
                      <img :src="row.original.Imagen ? row.original.Imagen[0].thumbnails.small.signedUrl : '/perrito.jpeg'" class="max-w-[200px] max-h-[200px] object-cover rounded shadow-sm"/>
                  </div>
             </template>
-
         </UTable>
     </div>
 </template>
 
 <script setup>
-
 /**
  * Propiedades del componente
  * @param lista Lista de equipo audiovisual (según DB)
@@ -41,19 +33,15 @@ const props = defineProps({
     cantidad: {type: Boolean},
     serie: {type: Boolean},
     inventario: {type: Boolean},
-    inventarioFinal: { type: Array, default: () => [] } // Lista final emit
+    // inventarioFinal: { type: Array, default: () => [] } // Lista final emit
 })
 
 /**
- * Sección emit
+ * updateList
+ * Emite una lista actualizada del equipo audiovisual seleccionado
+ * @param lista {array} - Copia de la lista de equipo ("equipoSeleccionado")
  */
-const emit = defineEmits(['update:inventarioFinal'])
-
-const actualizarListaEmit = () => {
-    console.log("Actualizando...")
-    emit('update:inventarioFinal', equipoSeleccionado.value)
-    console.log("Actualizado")
-}
+const emit = defineEmits(['updateList'])
 
 const UCheckbox = resolveComponent('UCheckbox')
 const UButton = resolveComponent('UButton')
@@ -64,17 +52,19 @@ const UinputNumber = resolveComponent('UInputNumber')
  */
 const filtroGlobal = ref('')
 
-/**
- * Tamaño columnas
- */
-const columnSizing = ref({})
-
 // Lista del equipo audiovisual seleccionado. Según la definición en base de datos
 const equipoSeleccionado = computed(() => {
     const listaEquipo = []
-    for(let i in rowSelection.value)
-        listaEquipo.push(props.lista[i])
-        return listaEquipo
+    // let idLista
+    for(let i in rowSelection.value){
+        // idLista = props.lista[i].Id
+        listaEquipo.push(
+            {
+                "Id": props.lista[i].Id
+            }
+        )
+    }
+    return listaEquipo
 })
 
 // Definición de las columnas para elemento <UTable>
@@ -138,7 +128,7 @@ let columnas = [
 ]
 
 /**
- *      ||| Sección de agregar columnas según props |||
+ * ||| Sección de agregar columnas según props |||
  */
 
 // Agregar columna de imagen
@@ -171,7 +161,7 @@ if(props.inventario) columnas.push
 // Objeto con los índices del equipo seleccionado en <UTable>
 const rowSelection = ref({})
 
-// Objeto para la ordenación de una columna
+// Ordenación por defecto de la lista de equipo
 const sorting = ref([
     {
         id: 'Seleccion',
@@ -212,6 +202,8 @@ function getHeader(column, label) {
  */
 function onSelect(row, event) {
   row.toggleSelected(!row.getIsSelected())
+  // Emitir evento en cada clic
+  emit('updateList', equipoSeleccionado.value)
 }
 
 /**

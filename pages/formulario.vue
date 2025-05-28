@@ -9,7 +9,7 @@
         <!-- Nombre -->
         <div class="sm:basis-auto px-4">
             <UFormField label="Nombre de responsable" name="responsable">
-                <UInput v-model="formData.nombre" />
+                <UInput v-model="formData.Responsable" placeholder="Nombre" />
             </UFormField>
         </div>
 
@@ -27,12 +27,24 @@
             </UFormField>
         </div>
 
-        Ejemplo emit: <pre> {{ inventarioFinal }} </pre>
+        <!-- Usos -->
+        <div class="sm:basis-auto px-4">
+            <UFormField label="Usos" name="responsable">
+                <USelect v-model="usos" multiple :items="usosItems" class="w-48" required/>
+            </UFormField>
+        </div>
+
+        <!-- Enviar información de salida a base de datos -->
+        <div class="sm:basis-auto px-4 flex">
+            <UButton color="success" variant="outline" size="lg" class="cursor-pointer" icon="mdi-keyboard-return" @click="submit">
+                Siguiente
+            </UButton>
+        </div>
 
     </div>
-
+    
     <!-- Lista de equipo audiovisual -->
-    <TablaEquipo :lista=inventario.list select serie inventario v-model:inventarioFinal="inventarioFinal"/>
+    <TablaEquipo :lista=inventario.list select @update-list="(lista) => listaEquipo = lista"/>
 
 </template>
 
@@ -42,15 +54,49 @@ import { CalendarDate, DateFormatter, getLocalTimeZone } from '@internationalize
 // Información de base de datos
 const { data: inventario } = await useFetch('/api/equipo')
 
-const inventarioFinal = ref([])
+// Lista actualizada de equipo (desde el componente <TablaEquipo>)
+const listaEquipo = ref([])
 
 // Datos para el calendario
 const dateFormat = new DateFormatter('es-MX', { dateStyle: 'medium' })
 const today = new Date()
 const calendar = shallowRef(new CalendarDate(today.getFullYear(), today.getMonth() + 1, today.getDate()))
+const fechaComputed = computed(() => {
+    return new Date(calendar.value.year, calendar.value.month-1, calendar.value.day)
+})
+
+// Posibles valores de 'usos' para la salida de equipo
+const usosItems = ref(['Entrevista', 'Reprografía', 'Entrevista videograbada', 'Entrevista audiograbada', 'Trabajo de campo'])
+const usos = ref(['Entrevista'])
+const usosComputed = computed(() => {
+    return usos.value.join(",")
+})
 
 // Datos del formulario
 const formData = reactive({
-    nombre: 'Rodrigo Colin Rivera',
+    Fecha: fechaComputed,
+    Usos: usosComputed,
+    Responsable: '',
+    Equipo: listaEquipo
 })
+
+/**
+ * Envío de todos los datos para crear salida en la base de datos
+ */
+async function submit() {
+    const nuevaSalida = await $fetch("/api/salidas", {
+        method: 'post',
+        body: formData
+    })
+    
+    // Reenviar a vista preliminar
+    await navigateTo({
+        path: '/preliminar',
+        method: 'post',
+        query : {
+            Id: nuevaSalida.Id
+        }
+    })
+}
+
 </script>
