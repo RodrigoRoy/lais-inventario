@@ -1,28 +1,35 @@
 /**
- * Información completa de una salida de equipo audiovisual
- * @return Object - Esquema completo del registro/record solicitado
- * {
- *  "Id": 0,
- *  "Fecha": "string",
- *  "Lista de equipo": 0,
- *  "Usos": "string",
- *  "Responsable": string,
- *  "list": [{Equipo audiovisual}]
- * }
- */
+* Información completa de una salida de equipo audiovisual
+* @return Object - Esquema completo del registro/record solicitado
+* {
+*  "Id": 0,
+*  "Fecha": "string",
+*  "Lista de equipo": 0,
+*  "Usos": "string",
+*  "Responsable": string,
+*  "list": [{Equipo audiovisual}]
+* }
+*/
 
 export default defineEventHandler(async (event) => {
     // Id de la "Salida" solicitada
     const recordId = getRouterParam(event, 'recordId')
-
-    // Datos básicos de "Salida" (no incluye campos tipo "Link to Another Record")
-    const salidaRecord = await $fetch(`${process.env.NOCODB_URL}/api/v2/tables/mxylas8z9l8ohr1/records/${recordId}`, {
-        headers: {
-            'xc-token': process.env.NOCODB_TOKEN
-        },
-        method: 'get',
-    })
-
+    let salidaRecord
+    try{
+        // Datos básicos de "Salida" (no incluye campos tipo "Link to Another Record")
+        salidaRecord = await $fetch(`${process.env.NOCODB_URL}/api/v2/tables/mxylas8z9l8ohr1/records/${recordId}`, {
+            headers: {
+                'xc-token': process.env.NOCODB_TOKEN
+            },
+            method: 'get',
+        })
+    } catch(err){
+        return sendError(event, createError({
+            statusCode: 404,
+            statusMessage: 'Registro de salida no encontrado'
+        }))
+    }
+    
     // Lista parcial del equipo audiovisual. Incluye "Id" y "Nombre"
     const listaEquipo = await $fetch(`${process.env.NOCODB_URL}/api/v2/tables/mxylas8z9l8ohr1/links/ccugy2tparkdkdi/records/${recordId}`, {
         headers: {
@@ -30,7 +37,7 @@ export default defineEventHandler(async (event) => {
         },
         method: 'get',
     })
-
+    
     // Generar lista a detalle del equipo audiovisual
     let listaEquipoDetail = []
     let equipoRecordDetail
@@ -38,7 +45,7 @@ export default defineEventHandler(async (event) => {
         // Esperar un segundo por cada 5 peticiones
         if(i % 5 == 0)
             await new Promise((resolve) => setTimeout(resolve, 1000))
-
+        
         // Obtener detalles
         equipoRecordDetail = await $fetch(`${process.env.NOCODB_URL}/api/v2/tables/mcc4adsnscn92bb/records/${listaEquipo.list[i].Id}`, {
             headers: {
@@ -46,13 +53,13 @@ export default defineEventHandler(async (event) => {
             },
             method: 'get',
         })
-
+        
         // Agregar a lista
         listaEquipoDetail.push(equipoRecordDetail)
     }
-
+    
     // Agregar propiedad "list" con los detalles del equipo audiovisual
     salidaRecord.list = listaEquipoDetail
-
+    
     return salidaRecord
 })

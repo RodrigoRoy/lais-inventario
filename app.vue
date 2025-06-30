@@ -26,10 +26,10 @@ const navBar = ref([
     icon: 'i-mdi-clipboard-check-outline',
     to: '/preliminar',
   },
-  {
-    label: 'Documento',
-    icon: 'i-mdi-file-document',
-    to: '/documento',
-  },
+  // {
+  //   label: 'Documento',
+  //   icon: 'i-mdi-file-document',
+  //   to: '/documento',
+  // },
 ])
 </script>

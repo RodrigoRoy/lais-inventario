@@ -11,6 +11,9 @@
 </template>
 
 <script setup>
+// Acceso a URL querie "record"
+const route = useRoute()
+
 // Información de base de datos (este es un ejemplo con el registro con Id 1)
-const { data:salida } = await useFetch('/api/salidas/1')
+const { data:salida } = await useFetch(`/api/salidas/${route.query.Id}`)
 </script>

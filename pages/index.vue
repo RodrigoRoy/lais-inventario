@@ -1,32 +1,35 @@
 <template>
-    <!-- Título -->
-    <div class="text-center mt-2">
-        <h1 color="primary" class="text-xl font-semibold tracking-wide uppercase">
-            Inventario de equipo audiovisual
-        </h1>
+  <!-- Sección hero principal -->
+  <section class="text-center py-12 px-6 space-y-6 bg-background rounded-xl shadow-sm border border-muted-foreground/10 max-w-4xl mx-auto">
     
-        <p class="text-center text-sm font-thin">
-            Aplicación para la generación del formato de bienes en tránsito.
-        </p>
+    <!-- Título -->
+    <h1 class="text-3xl font-bold tracking-wide text-primary uppercase">
+      Inventario de equipo audiovisual
+    </h1>
+
+    <!-- Subtítulo -->
+    <p class="text-muted-foreground text-base font-light max-w-xl mx-auto">
+      Aplicación para la generación del formato de bienes en tránsito. Comienza una nueva salida para registrar los equipos seleccionados.
+    </p>
+
+    <!-- Icono decorativo grande -->
+    <div class="flex justify-center">
+      <UIcon name="i-mdi-package-variant-closed" class="text-primary text-6xl" />
     </div>
 
-    <!-- Opciones iniciales -->
-    <div class="flex flex-col sm:flex-row gap-4 justify-center text-center">
-        <!-- Comenzar un registro -->
-        <div class="sm:basis-auto px-4">
-            <p class="mt-6">
-                Probar formulario de selección de equipo
-            </p>
-            <UButton color="primary" class="mt-2" to="/formulario" target="_blank">Crear salida</UButton>
-        </div>
-
-        <!-- Enlace a base de datos -->
-        <div class="sm:basis-auto px-4">
-            <p class="mt-6">
-                Consultar base de datos de equipo audiovisual
-            </p>
-            <UButton color="primary" class="mt-2" to="https://app.nocodb.com/#/nc/view/cd31340b-a706-42fe-9739-1f00d5494cca" target="_blank">Noco DB</UButton>
-        </div>
+    <!-- Botón de acción -->
+    <div class="flex justify-center">
+      <UButton
+        to="/formulario"
+        target="_blank"
+        size="lg"
+        icon="i-mdi-plus-box"
+        color="primary"
+        class="mt-4"
+      >
+        Crear nueva salida
+      </UButton>
     </div>
-
+    
+  </section>
 </template>
