@@ -46,7 +46,7 @@
             </h2>
             
             <!-- Lista de equipo audiovisual -->
-            <TablaEquipo :lista=salida.list :soloVisualizacion="true" />
+            <TablaEquipo :lista=salida.list :soloVisualizacion="true" class="mb-8" />
         </div>
     </div>
     
