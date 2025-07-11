@@ -19,14 +19,7 @@
 
     <!-- Botón de acción -->
     <div class="flex justify-center">
-      <UButton
-        to="/formulario"
-        target="_blank"
-        size="lg"
-        icon="i-mdi-plus-box"
-        color="primary"
-        class="mt-4"
-      >
+      <UButton to="/formulario" target="_self" size="lg" icon="i-mdi-plus-box" color="primary" class="mt-4" >
         Crear nueva salida
       </UButton>
     </div>

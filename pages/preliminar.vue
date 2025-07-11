@@ -32,12 +32,12 @@
         
         <!-- Botones -->
         <div class="flex flex-col sm:flex-row gap-4 justify-end items-center">
-            <UButton color="success" variant="outline" size="lg" icon="i-mdi-pencil" to="/formulario" class="cursor-pointer" >
+            <UButton color="success" variant="outline" size="lg" icon="i-mdi-pencil" to="/formulario" class="cursor-pointer" @click="setLocalStorage" >
                 Editar salida
             </UButton>
             
             <!-- Generar documento docx -->
-            <ExportDocx :salida="salida" text="Crear documento" icon="i-mdi-file-word" class="w-auto cursor-pointer" />
+            <ExportDocx :salida="salida" text="Crear documento" icon="i-mdi-file-word" class="w-auto cursor-pointer" @click="deleteLocalStorage"/>
         </div>
         
         <div>
@@ -53,24 +53,42 @@
 </template>
 
 <script setup>
-// Acceso a URL querie "record"
+// Acceso a URL querie "Id"
 const route = useRoute()
 
 // Información de base de datos
-
 const { data, error } = await useFetch(`/api/salidas/${route.query.Id}`)
-const salida = ref(data.value ?? {})
 
-async function goToDocument(){
-    // Reenviar a vista preliminar
-    await navigateTo({
-        path: '/documento',
-        method: 'post',
-        query : {
-            Id: route.query.Id
-        }
-    })
+// Referencia a la Salida en base de datos
+const salida = ref(data.value)
+
+/**
+ * Almacena datos sobre la salida en localStorage del navegador
+ * Los datos que se almacenan son:
+ * - Id de la Salida
+ * - Fecha
+ * - Motivo o usos
+ * - Nombre de responsable
+ */
+function setLocalStorage(){
+    localStorage.setItem('preliminar-id', route.query.Id)
+    localStorage.setItem('preliminar-fecha', data.value.Fecha)
+    localStorage.setItem('preliminar-motivo', data.value.Usos)
+    localStorage.setItem('preliminar-responsable', data.value.Responsable)
 }
 
-console.log("salida: ", salida)
+/**
+ * Borra datos sobre la salida en localStorage del navegador
+ * Los datos que se borran son:
+ * - Id de la Salida
+ * - Fecha
+ * - Motivo o usos
+ * - Nombre de responsable
+ */
+function deleteLocalStorage(){
+    localStorage.removeItem('preliminar-id')
+    localStorage.removeItem('preliminar-fecha')
+    localStorage.removeItem('preliminar-motivo')
+    localStorage.removeItem('preliminar-responsable')
+}
 </script>

@@ -16,7 +16,7 @@
             </template>
         </UTable>
         <!-- Modo visualización -->
-        <UTable v-else :data="lista" :columns="columnas" sticky resizable class="flex-1 max-h-[70vh] table-fixed w-full rounded-lg overflow-hidden bg-gray-900 text-gray-200 shadow-md border border-gray-700 [&_thead]:bg-gray-800 [&_tbody_tr:hover]:bg-gray-800/50 [&_td]:border-gray-700 [&_th]:border-gray-700" color="gray" variant="subtle">
+        <UTable v-else :data="lista" :columns="columnas" class="flex-1 table-fixed w-full rounded-lg bg-gray-900 text-gray-200 border border-gray-700 [&_thead]:bg-gray-800 [&_tbody_tr:hover]:bg-gray-800/50 [&_td]:border-gray-700 [&_th]:border-gray-700" color="gray" variant="subtle">
             <!-- Columna "Imagen" -->
             <template #Imagen-cell="{ row }">
                 <div class="flex items-center justify-center h-full ">
@@ -48,8 +48,8 @@ const props = defineProps({
 
 /**
 * updateList
-* Emite una lista actualizada del equipo audiovisual seleccionado
-* @param lista {array} - Copia de la lista de equipo ("equipoSeleccionado")
+* Emite una lista actualizada de los id's de la tabla del equipo seleccionado
+* @param lista {array} - Copia de la lista de equipo (inventario)
 */
 const emit = defineEmits(['updateList'])
 
@@ -65,21 +65,6 @@ const UinputNumber = resolveComponent('UInputNumber')
 */
 const filtroGlobal = ref('')
 
-// Lista del equipo audiovisual seleccionado. Según la definición en base de datos
-const equipoSeleccionado = computed(() => {
-    const listaEquipo = []
-    const listaTabla = []
-    // let idLista
-    for(let i in rowSelection.value){
-        // idLista = props.lista[i].Id
-        listaEquipo.push(
-        {
-            "Id": props.lista[i].Id
-        })
-        listaTabla.push(i)
-    }
-    return { tableList: listaTabla, dataList: listaEquipo }
-})
 
 // Definición de las columnas para elemento <UTable>
     let columnas = []
@@ -220,8 +205,8 @@ const equipoSeleccionado = computed(() => {
         */
         function onSelect(row, event) {
             row.toggleSelected(!row.getIsSelected())
-            // Emitir evento en cada clic
-            emit('updateList', equipoSeleccionado.value)
+            // Emitir evento en cada clic, se manda los id's seleccionados de la tabla
+            emit('updateList', rowSelection.value)
         }
         
         /**
@@ -267,27 +252,6 @@ const equipoSeleccionado = computed(() => {
         // }
         
         onMounted(async () => {
-            const idGuardado = localStorage.getItem(SECRET)
-            const listaRowTabla = localStorage.getItem('listaTabla')
-            
-            if (listaRowTabla) {
-
-                    const newTable = listaRowTabla.split(",")
-
-                    console.log("lista tabla:", newTable)
-                    const tabla = []
-
-                    newTable.map(
-                        (value) => {value : true}
-                    )
-
-
-                    console.log("tabla final ", newTable)
-                    
-                    
-            } else {
-                console.log("No se pudo obtener :c")
-            }
-            
+            rowSelection.value = localStorage.getItem('preliminar-lista') ? JSON.parse(localStorage.getItem('preliminar-lista')) : rowSelection.value
         })
     </script>
