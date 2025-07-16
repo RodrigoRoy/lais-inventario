@@ -16,16 +16,16 @@
         <div class="bg-muted-foreground/5 rounded-lg p-6 border border-muted-foreground/10">
             <div class="grid md:grid-cols-3 gap-4 text-sm text-gray-600">
                 <div>
+                    <p class="font-medium text-gray-500">Responsable</p>
+                    <p class="text-lg font-semibold text-gray-800 dark:text-gray-200">{{ salida.Responsable }}</p>
+                </div>
+                <div>
                     <p class="font-medium text-gray-500">Fecha</p>
                     <p class="text-lg font-semibold text-gray-800 dark:text-gray-200">{{ salida.Fecha }}</p>
                 </div>
                 <div>
-                    <p class="font-medium text-gray-500">Motivo</p>
-                    <p class="text-lg font-semibold text-gray-800 dark:text-gray-200">{{ salida.Usos }}</p>
-                </div>
-                <div>
-                    <p class="font-medium text-gray-500">Responsable</p>
-                    <p class="text-lg font-semibold text-gray-800 dark:text-gray-200">{{ salida.Responsable }}</p>
+                    <p class="font-medium text-gray-500">Motivo<span v-if="salida.Usos.split(',').length > 1">s</span></p>
+                    <p class="text-lg font-semibold text-gray-800 dark:text-gray-200" v-for="motivo in salida.Usos.split(',')">{{ motivo }}</p>
                 </div>
             </div>
         </div>
