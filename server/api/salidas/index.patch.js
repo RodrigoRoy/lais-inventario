@@ -7,11 +7,28 @@
  *  "Usos": "string",
  *  "Responsable": "string",
  *  "Equipo": [
- *      { "Id": 3 },
- *      { "Id": 4 }
+ *      {
+ *          "Id": 3
+ *      },
+ *      {
+ *          "Id": 4
+ *      }
  *  ]
  * }
- * @return Object Resultado de la actualización
+ * @return Object Resultado de la actualización, incluye Id del record, copia de la lista de equipo y
+ * boolean que indica si son correctos los "links" de la lista de equipo
+ * {
+ *   "Id": 10,
+ *   "updated": true,
+ *   "list": [
+ *     {
+ *       "Id": 3
+ *     },
+ *     {
+ *       "Id": 4
+ *     }
+ *   ]
+ * }
  */
 
 export default defineEventHandler(async (event) => {
@@ -25,7 +42,7 @@ export default defineEventHandler(async (event) => {
     }))
   }
 
-  // Actualizar los datos principales (PATCH = parcial, PUT = completo)
+  // Actualizar los datos básicos (Fecha, Usos, Responsable)
   const updateSalida = await $fetch(`${process.env.NOCODB_URL}/api/v2/tables/mxylas8z9l8ohr1/records/`, {
     headers: {
       'xc-token': process.env.NOCODB_TOKEN
@@ -39,19 +56,44 @@ export default defineEventHandler(async (event) => {
     }
   })
 
-  // Actualizar la lista de equipo (linked records)
-  // TO DO: @RodrigoRoy No existe fetch para actualizar linked records. Al parecer la única manera es eliminando los linked records
-  // existentes y volver a realizar petición POST
-  
-  // const updateEquipo = await $fetch(`${process.env.NOCODB_URL}/api/v2/tables/mxylas8z9l8ohr1/links/ccugy2tparkdkdi/records/${Id}`, {
-  //   headers: {
-  //     'xc-token': process.env.NOCODB_TOKEN
-  //   },
-  //   method: 'post',
-  //   body: Equipo // una lista de objetos con campo "Id"
-  // })
+  // Actualizar la lista de equipo (linked records):
+  // 1. Obtener la lista de linked records actual
+  // 2. Borrar linked records actuales
+  // 3. Actualizar por nuevos linked records
 
-  // Respuesta combinada
+  // Obtener la lista actual de Linked Records (lista de equipo)
+  const linkedRecords = await $fetch(`${process.env.NOCODB_URL}/api/v2/tables/mxylas8z9l8ohr1/links/ccugy2tparkdkdi/records/${Id}`, {
+    headers: {
+      'xc-token': process.env.NOCODB_TOKEN
+    },
+    method: 'get',
+  })
+
+  // Lista (de Id's) de equipo audiovisual
+  const toUnlinkRecords = linkedRecords.list
+
+  // Petición para eliminar / unlink la lista de equipo actual
+  const unlinkRecords = await $fetch(`${process.env.NOCODB_URL}/api/v2/tables/mxylas8z9l8ohr1/links/ccugy2tparkdkdi/records/${Id}`, {
+    headers: {
+      'xc-token': process.env.NOCODB_TOKEN
+    },
+    method: 'delete',
+    body: toUnlinkRecords
+  })
+
+  // Agregar la nueva lista de equipo como Linked Records
+  const updateEquipo = await $fetch(`${process.env.NOCODB_URL}/api/v2/tables/mxylas8z9l8ohr1/links/ccugy2tparkdkdi/records/${Id}`, {
+      headers: {
+          'xc-token': process.env.NOCODB_TOKEN
+      },
+      method: 'post',
+      body: Equipo
+  })
+
+  // Esperar 1 segundo para no exceder peticiones máximas a NocoDB
+  await new Promise((resolve) => setTimeout(resolve, 1000))
+
+  // Respuesta personalizada con Id, lista de equipo y boolean de operación exitosa
   return {
     ...updateSalida,
     updated: true,

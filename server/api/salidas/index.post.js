@@ -59,5 +59,9 @@ export default defineEventHandler(async (event) => {
     newSalida.updated = updateEquipo
     newSalida.list = Equipo
 
+    // Esperar 1 segundo para no exceder peticiones máximas a NocoDB
+    await new Promise((resolve) => setTimeout(resolve, 1000))
+
+    // Respuesta personalizada con Id, lista de equipo y boolean de operación exitosa
     return newSalida
 })

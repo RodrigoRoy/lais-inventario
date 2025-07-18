@@ -60,6 +60,10 @@ export default defineEventHandler(async (event) => {
     
     // Agregar propiedad "list" con los detalles del equipo audiovisual
     salidaRecord.list = listaEquipoDetail
+
+    // Esperar 1 segundo para no exceder peticiones máximas a NocoDB
+    await new Promise((resolve) => setTimeout(resolve, 1000))
     
+    // Respuesta personalizada con Id, Fecha, Cantidad de equipo, Usos, Responsable y lista detallada de equipo
     return salidaRecord
 })
