@@ -3,6 +3,8 @@
     <h1 color="primary" class="text-xl font-semibold tracking-wide uppercase text-center mt-2">
         Seleccionar equipo
     </h1>
+
+    lista tabla (formulario): {{ listaTabla }}
     
     <!-- Formulario para datos básicos -->
     <div class="flex flex-col sm:flex-row gap-4 justify-center sm:text-center my-4">
@@ -50,7 +52,7 @@
     </p>
     
     <!-- Lista de equipo audiovisual -->
-    <TablaEquipo :lista=inventario.list select @update-list="(lista) => listaTabla = lista"/>
+    <TablaEquipo :lista=inventario.list select @update-list="(lista) => listaTabla = lista" />
         
 </template>
 
@@ -79,50 +81,45 @@ const listaEquipo = computed(() => {
     return nuevoEquipo
 })
 
-function actualizacion(lista) {
-    listaEquipo.value = lista.dataList
-    listaTabla.value = lista.tableList
-}
-
 // Lista actualizada de equipo (desde el componente <TablaEquipo>)
-    const listaTabla = ref({})
-    
-    // Datos para el calendario
-    const dateFormat = new DateFormatter('es-MX', { dateStyle: 'medium' })
-    const today = new Date()
-    const calendar = shallowRef(new CalendarDate(today.getFullYear(), today.getMonth() + 1, today.getDate()))
-    const fechaComputed = computed(() => {
-        if (!calendar.value) return null
-        return new Date(calendar.value.year, calendar.value.month-1, calendar.value.day)
-    })
-    
-    // Posibles valores de 'usos' para la salida de equipo
-    const usosItems = ref(['Entrevista', 'Reprografía', 'Entrevista videograbada', 'Entrevista audiograbada', 'Trabajo de campo'])
-    const usos = ref(['Entrevista'])
-    const usosComputed = computed(() => {
-        return usos.value.join(",")
-    })
-    
-    // Datos del formulario
-    const formData = reactive({
-        Fecha: fechaComputed,
-        Usos: usosComputed,
-        Responsable: 'Felipe Morales Leal',
-        Equipo: listaEquipo
-    })
-    
-    // Estado de los errores
-    const erroresEstado = reactive({
-        Responsable: null,
-        Fecha: null,
-        Usos: null,
-        Equipo: null,
-    })
+const listaTabla = ref({})
 
-    /**
-    * Envío de todos los datos para crear salida en la base de datos
-    */
-   // Guardar información de la selección del equipo en localStorage (objeto 'listaTabla')
+// Datos para el calendario
+const dateFormat = new DateFormatter('es-MX', { dateStyle: 'medium' })
+const today = new Date()
+const calendar = shallowRef(new CalendarDate(today.getFullYear(), today.getMonth() + 1, today.getDate()))
+const fechaComputed = computed(() => {
+    if (!calendar.value) return null
+    return new Date(calendar.value.year, calendar.value.month-1, calendar.value.day)
+})
+
+// Posibles valores de 'usos' para la salida de equipo
+const usosItems = ref(['Entrevista', 'Reprografía', 'Entrevista videograbada', 'Entrevista audiograbada', 'Trabajo de campo'])
+const usos = ref(['Entrevista'])
+const usosComputed = computed(() => {
+    return usos.value.join(",")
+})
+
+// Datos del formulario
+const formData = reactive({
+    Fecha: fechaComputed,
+    Usos: usosComputed,
+    Responsable: 'Felipe Morales Leal',
+    Equipo: listaEquipo
+})
+
+// Estado de los errores
+const erroresEstado = reactive({
+    Responsable: null,
+    Fecha: null,
+    Usos: null,
+    Equipo: null,
+})
+
+/**
+* Envío de todos los datos para crear salida en la base de datos
+*/
+// Guardar información de la selección del equipo en localStorage (objeto 'listaTabla')
 async function submit() {
   localStorage.setItem('preliminar-lista', JSON.stringify(listaTabla.value))
 
@@ -154,78 +151,79 @@ async function submit() {
         crearNuevaSalida()
 }
 
+
+
+/**
+* Envia los datos recopilados para crear un registro de "Salida" en base de datos.
+* Después, redirige a la siguiente página "Vista preliminar"
+*/
+async function crearNuevaSalida() {
+    // Petición para crear nueva salida en API
+    const { data, error } = await useFetch('/api/salidas', {
+        method: 'POST',
+        body: formData
+    })
     
+    if(error.value) 
+    throw createError({ statusCode: error.statusCode, statusText: error.statusText, statusMessage: 'Database error' })
     
-    /**
-    * Envia los datos recopilados para crear un registro de "Salida" en base de datos.
-    * Después, redirige a la siguiente página "Vista preliminar"
-    */
-    async function crearNuevaSalida() {
-        // Petición para crear nueva salida en API
-        const { data, error } = await useFetch('/api/salidas', {
-            method: 'POST',
-            body: formData
-        })
-        
-        if(error.value) 
-        throw createError({ statusCode: error.statusCode, statusText: error.statusText, statusMessage: 'Database error' })
-        
-        // Reenviar a vista preliminar
-        await navigateTo({
-            path: '/preliminar',
-            query : {
-                Id: data.value.Id
-            }
-        })
-    }
-    
-    /**
-    * Envia los datos recopilados para actualizar un registro de "Salida" en base de datos.
-    * Después, redirige a la siguiente página "Vista preliminar"
-    */
-    async function actualizarSalida() {
-        // Petición para actualizar salida existente en API
-        // TO DO: Implementación parcial del API para Salidas PATCH. Ver notas en /api/salidas/index.patch.js
-        const { data, error } = await useFetch(`/api/salidas/${idLista.value}`, {
-            method: 'PATCH',
-            body: {
-                Id: idLista.value,
-                ...formData
-            }
-        })
-        
-        if(error.value) 
-        throw createError({ statusCode: error.statusCode, statusText: error.statusText, statusMessage: 'Database error' })
-        
-        // Reenviar a vista preliminar
-        await navigateTo({
-            path: '/preliminar',
-            query : {
-                Id: data.value.Id
-            }
-        })
-    }
-    
-    // Acciones que se efectuan inmediatamente en la página
-    onMounted(async () => {
-        // Obtener Id de la salida en localStorage (solo para actualizaciones)
-        idLista.value = localStorage.getItem('preliminar-id')
-        isUpdate.value = idLista.value ? true : false
-        
-        // En caso de actualización, establecer ciertos valores del formulario
-        if(isUpdate.value) {
-            // Lista de equipo seleccionado (objeto que representa los índices del equipo seleccionado)
-            listaTabla.value = localStorage.getItem('preliminar-lista') ? JSON.parse( localStorage.getItem('preliminar-lista') ) : []
-            
-            // Fecha de la "Salida"
-            const fechaDB = localStorage.getItem('preliminar-fecha') ? new Date( localStorage.getItem('preliminar-fecha') ) : undefined
-            calendar.value = fechaDB ? new CalendarDate(fechaDB.getFullYear(), fechaDB.getMonth() + 1, fechaDB.getDate() + 1) : calendar.value
-            
-            // Usos o motivo
-            usos.value = localStorage.getItem('preliminar-motivo') ? localStorage.getItem('preliminar-motivo').split(',') : usos.value
-            
-            // Nombre de responsable
-            formData.Responsable = localStorage.getItem('preliminar-responsable') ? localStorage.getItem('preliminar-responsable') : formData.Responsable
+    // Reenviar a vista preliminar
+    await navigateTo({
+        path: '/preliminar',
+        query : {
+            Id: data.value.Id
         }
     })
+}
+
+/**
+* Envia los datos recopilados para actualizar un registro de "Salida" en base de datos.
+* Después, redirige a la siguiente página "Vista preliminar"
+*/
+async function actualizarSalida() {
+    // Petición para actualizar salida existente en API
+    // TO DO: Implementación parcial del API para Salidas PATCH. Ver notas en /api/salidas/index.patch.js
+    const { data, error } = await useFetch(`/api/salidas/${idLista.value}`, {
+        method: 'PATCH',
+        body: {
+            Id: idLista.value,
+            ...formData
+        }
+    })
+    
+    if(error.value) 
+    throw createError({ statusCode: error.statusCode, statusText: error.statusText, statusMessage: 'Database error' })
+    
+    // Reenviar a vista preliminar
+    await navigateTo({
+        path: '/preliminar',
+        query : {
+            Id: data.value.Id
+        }
+    })
+}
+
+// Acciones que se efectuan inmediatamente en la página
+onMounted(async () => {
+    // Obtener Id de la salida en localStorage (solo para actualizaciones)
+    idLista.value = localStorage.getItem('preliminar-id')
+    isUpdate.value = idLista.value ? true : false
+    
+    // En caso de actualización, establecer ciertos valores del formulario
+    if(isUpdate.value) {
+        // Lista de equipo seleccionado (objeto que representa los índices del equipo seleccionado)
+        listaTabla.value = localStorage.getItem('preliminar-lista') ? JSON.parse( localStorage.getItem('preliminar-lista') ) : {}
+        
+        // Fecha de la "Salida"
+        const fechaDB = localStorage.getItem('preliminar-fecha') ? new Date( localStorage.getItem('preliminar-fecha') ) : undefined
+        calendar.value = fechaDB ? new CalendarDate(fechaDB.getFullYear(), fechaDB.getMonth() + 1, fechaDB.getDate() + 1) : calendar.value
+        
+        // Usos o motivo
+        usos.value = localStorage.getItem('preliminar-motivo') ? localStorage.getItem('preliminar-motivo').split(',') : usos.value
+        
+        // Nombre de responsable
+        formData.Responsable = localStorage.getItem('preliminar-responsable') ? localStorage.getItem('preliminar-responsable') : formData.Responsable
+    }
+
+})
 </script>
