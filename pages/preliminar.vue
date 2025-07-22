@@ -32,7 +32,7 @@
         
         <!-- Botones -->
         <div class="flex sm:flex-row gap-4 justify-between items-center">
-            <UButton color="success" variant="outline" size="lg" icon="i-mdi-keyboard-return" to="/" class="justify-start cursor-pointer" @click="setLocalStorage" >
+            <UButton color="success" variant="outline" size="lg" icon="i-mdi-keyboard-return" to="/" class="justify-start cursor-pointer" @click="deleteLocalStorageIndex" >
                 Regresar a Inicio
             </UButton>
             
@@ -97,5 +97,22 @@ function deleteLocalStorage(){
     localStorage.removeItem('preliminar-fecha')
     localStorage.removeItem('preliminar-motivo')
     localStorage.removeItem('preliminar-responsable')
+}
+
+/**
+ * Borra datos sobre la salida en localStorage del navegador, incluido la lista preliminar
+ * Los datos que se borran son:
+ * - Id de la Salida
+ * - Fecha
+ * - Motivo o usos
+ * - Nombre de responsable
+ * - Lista preliminar de equipo seleccionado
+ */
+function deleteLocalStorageIndex(){
+    localStorage.removeItem('preliminar-id')
+    localStorage.removeItem('preliminar-fecha')
+    localStorage.removeItem('preliminar-motivo')
+    localStorage.removeItem('preliminar-responsable')
+    localStorage.removeItem('preliminar-lista')
 }
 </script>

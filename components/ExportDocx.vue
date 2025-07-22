@@ -13,6 +13,8 @@ const props = defineProps({
     text: {type: String}
 })
 
+const usosCadena = props?.salida?.Usos.replace(/,/g, ', ');
+
 import {
     Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell,
     WidthType, HeadingLevel, AlignmentType, BorderStyle, ShadingType, VerticalAlign,
@@ -47,34 +49,83 @@ function createDocument() {
     // Encabezado de tabla
     const encabezado = new TableRow({
         tableHeader: true,
-        children: ["Cantidad", "Descripción breve", "No. Serie", "No. Inventario"].map(text =>
+        
+        children: [
+        // Columna Cantidad
+        new TableCell({
+            verticalAlign: "center",
+            width: { size: 600, type: WidthType.DXA },
+            shading: { fill: "e0e0e0", type: ShadingType.CLEAR, color: "auto" },
+            margins: { top: 0, right: 0, bottom: 0, left: 0 },
+            children: [new Paragraph({
+                children: [new TextRun({ text: "Cantidad", bold: true })],
+                alignment: AlignmentType.CENTER,
+                spacing: { before: 0, after: 0 }
+            })]
+        }),
+        // Columna Descripción breve (más ancho)
+        new TableCell({
+            verticalAlign: "center",
+            width: { size: 4000, type: WidthType.DXA },
+            shading: { fill: "e0e0e0", type: ShadingType.CLEAR, color: "auto" },
+            margins: { top: 0, right: 0, bottom: 0, left: 0 },
+            children: [new Paragraph({
+                children: [new TextRun({ text: "Descripción breve", bold: true })],
+                alignment: AlignmentType.CENTER,
+                spacing: { before: 0, after: 0 }
+            })]
+        }),
+        // Columna No. Serie
         new TableCell({
             verticalAlign: "center",
             width: { size: 2300, type: WidthType.DXA },
             shading: { fill: "e0e0e0", type: ShadingType.CLEAR, color: "auto" },
-            children: [new Paragraph({ 
-                children: [new TextRun({text: text, bold: true})], 
-                alignment: AlignmentType.CENTER 
+            margins: { top: 0, right: 0, bottom: 0, left: 0 },
+            children: [new Paragraph({
+                children: [new TextRun({ text: "No. Serie", bold: true })],
+                alignment: AlignmentType.CENTER,
+                spacing: { before: 0, after: 0 }
+            })]
+        }),
+        // Columna No. Inventario
+        new TableCell({
+            verticalAlign: "center",
+            width: { size: 2300, type: WidthType.DXA },
+            shading: { fill: "e0e0e0", type: ShadingType.CLEAR, color: "auto" },
+            margins: { top: 0, right: 0, bottom: 0, left: 0 },
+            children: [new Paragraph({
+                children: [new TextRun({ text: "No. Inventario", bold: true })],
+                alignment: AlignmentType.CENTER,
+                spacing: { before: 0, after: 0 }
             })]
         })
-        )
+    ]
     })
     
+    let categoriasOrdenadas = Object.entries(categorias)
+    .sort(([catA], [catB]) => {
+        if (catA === "Sin categoría") return 1; // "Sin categoría" va al final
+        if (catB === "Sin categoría") return -1;
+        return catA.localeCompare(catB); // Ordenar alfabéticamente las otras categorías
+    });
+
     let primeraCategoria = true
     
     // Agregar equipos por categoría
-    for (const [categoria, items] of Object.entries(categorias)) {
+    for (const [categoria, items] of categoriasOrdenadas) {
         equipoRows.push(new TableRow({
             children: [
             new TableCell({
                 verticalAlign: "center",
                 columnSpan: 4,
                 shading: { fill: "e0e0e0", type: ShadingType.CLEAR, color: "auto" },
+                margins: { top: 0, right: 0, bottom: 0, left: 0 },
                 children: [new Paragraph({
                     children: [new TextRun({ text: categoria.toUpperCase(), bold: true })],
                     alignment: AlignmentType.CENTER,
                     size: 28
-                })]
+                })],
+                spacing: { before: 0, after: 0 }
             }),
             ]
         }))
@@ -89,19 +140,27 @@ function createDocument() {
                 children: [
                 new TableCell({ 
                     verticalAlign: "center", 
-                    children: [new Paragraph({ children: [new TextRun("1")], alignment: AlignmentType.CENTER })] 
+                    margins: { top: 0, right: 0, bottom: 0, left: 0 },
+                    children: [new Paragraph({ children: [new TextRun("1")], alignment: AlignmentType.CENTER })],
+                    spacing: { before: 0, after: 0 }
                 }),
                 new TableCell({ 
                     verticalAlign: "center", 
-                    children: [new Paragraph({ children: [new TextRun(String(equipo.Nombre || ""))] })] 
+                    margins: { top: 0, right: 0, bottom: 0, left: 0 },
+                    children: [new Paragraph({ children: [new TextRun(String(equipo.Nombre || ""))] })],
+                    spacing: { before: 0, after: 0 }
                 }),
                 new TableCell({ 
                     verticalAlign: "center", 
-                    children: [new Paragraph({ children: [new TextRun(String(equipo["Número de serie"] || ""))] })] 
+                    margins: { top: 0, right: 0, bottom: 0, left: 0 },
+                    children: [new Paragraph({ children: [new TextRun(String(equipo["Número de serie"] || ""))] })],
+                    spacing: { before: 0, after: 0 }
                 }),
                 new TableCell({ 
                     verticalAlign: "center", 
-                    children: [new Paragraph({ children: [new TextRun(String(equipo["Número de inventario"] || ""))] })] 
+                    margins: { top: 0, right: 0, bottom: 0, left: 0 },
+                    children: [new Paragraph({ children: [new TextRun(String(equipo["Número de inventario"] || ""))] })],
+                    spacing: { before: 0, after: 0 }
                 })
                 ]
             }))
@@ -139,7 +198,8 @@ function createDocument() {
                                     bold: true,
                                     size: 26,
                                 }),
-                            ]
+                            ],
+                            spacing: { before: 0, after: 0 }
                         })
                     ]
                 })
@@ -158,25 +218,30 @@ function createDocument() {
                     size: 32,
                 }),
                 ],
-                alignment: AlignmentType.CENTER
+                alignment: AlignmentType.CENTER,
+                spacing: { before: 0, after: 0 }
             }),
 
             new Paragraph(""),
             new Paragraph({
                 children: [new TextRun({ text: `Fecha: ${formatoFecha()}`, bold: true })],
-                alignment: AlignmentType.RIGHT
+                alignment: AlignmentType.RIGHT,
+                spacing: { before: 0, after: 0 }
             }),
             new Paragraph({
                 children: [
                 new TextRun({ text: "Nombre del solicitante: ", bold: true }),
                 new TextRun(String(props.salida.Responsable || ""))
-                ]
+                ],
+                spacing: { before: 0, after: 0 }
             }),
             new Paragraph({
-                children: [new TextRun({ text: "Origen: ", bold: true }), new TextRun("Laboratorio Audiovisual de Investigación Social")]
+                children: [new TextRun({ text: "Origen: ", bold: true }), new TextRun("Laboratorio Audiovisual de Investigación Social")],
+                spacing: { before: 0, after: 0 }
             }),
             new Paragraph({
-                children: [new TextRun({ text: "Sede: ", bold: true }), new TextRun("Poussin")]
+                children: [new TextRun({ text: "Sede: ", bold: true }), new TextRun("Poussin")],
+                spacing: { before: 0, after: 0 }
             }),
             new Paragraph(""),
             
@@ -184,12 +249,14 @@ function createDocument() {
                 columnWidths: [2200, 2300, 2300, 2300],
                 rows: equipoRows,
                 width: { size: 100, type: WidthType.PERCENTAGE },
-                layout: "fixed"
+                layout: "fixed",
+                spacing: { before: 0, after: 0 }
             }),
             
             new Paragraph(""),
             new Paragraph({
-                children: [new TextRun({ text: "Observaciones: ", bold: true })]
+                children: [new TextRun({ text: "Observaciones: ", bold: true })],
+                spacing: { before: 0, after: 0 }
             }),
             new Paragraph(""),
             new Table({
@@ -202,27 +269,28 @@ function createDocument() {
                         width: { size: 9100, type: WidthType.DXA },
                         children: [
                         new Paragraph({
-                            children: [new TextRun(String(props.salida.Usos || ""))],
-                            alignment: AlignmentType.CENTER
+                            children: [new TextRun(
+                               String(usosCadena || "")
+                            )],
+                            alignment: AlignmentType.CENTER,
+                            spacing: { before: 0, after: 0 }
                         })
                         ]
                     })
-                    ]
+                    ],
+                    spacing: { before: 0, after: 0 }
                 })
                 ]
             }),
             
-            // new Paragraph(""),
-            // new Paragraph(""),
-            
-            // Page break (dos saltos de línea)
             new Paragraph({
                 children: [
                 new TextRun({
                     text: "",
                     break: 2,
                 })
-                ]
+                ],
+                spacing: { before: 0, after: 0 }
             }),
             
             // Firmas finales
@@ -232,7 +300,8 @@ function createDocument() {
                 new TableRow({
                     children: [
                     new TableCell({
-                        verticalAlign: "center",
+                        verticalAlign: "top",
+                        margins: { top: 0, right: 0, bottom: 0, left: 0 },
                         width: {
                             size: 4550,
                             type: WidthType.DXA,
@@ -259,6 +328,7 @@ function createDocument() {
                         new Paragraph({
                             text: "Portador del bien y autorización",
                             alignment: AlignmentType.CENTER,
+                            size: 28,
                         }),
                         new Paragraph(""),
                         new Paragraph(""),
@@ -278,7 +348,8 @@ function createDocument() {
                         ],
                     }),
                     new TableCell({
-                        verticalAlign: "center",
+                        verticalAlign: "top",
+                        margins: { top: 0, right: 0, bottom: 0, left: 0 },
                         width: {
                             size: 4550,
                             type: WidthType.DXA,
@@ -305,6 +376,7 @@ function createDocument() {
                         new Paragraph({
                             text: "Personal de vigilancia",
                             alignment: AlignmentType.CENTER,
+                            size: 28,
                         }),
                         new Paragraph(""),
                         new Paragraph(""),
