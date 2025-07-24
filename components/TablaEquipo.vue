@@ -1,8 +1,6 @@
 <template>
     <div class="flex flex-col flex-1" w-full>
 
-        lista tabla (TablaEquipo): {{ rowSelection }}
-        
         <div v-if="!soloVisualizacion" class="flex pr-4 pt-4 border-b border-accented">
             <div class="flex flex-col md:flex-row items-center gap-4 mb-4">
                 <UInput v-model="filtroGlobal" icon="i-mdi-magnify" class="max-w-sm" placeholder="Buscar equipo..." ></UInput>

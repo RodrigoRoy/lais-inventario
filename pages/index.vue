@@ -65,7 +65,7 @@
 </template>
 
 <script setup>
-const { data: salidaDB } = useFetch('api/salidas')
+const { data: salidaDB } = await useFetch('api/salidas')
 
 // Convierte la lista de información en una lista para poder operar directamente con ella
 const salidas = computed(() => {

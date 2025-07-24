@@ -4,8 +4,6 @@
         Seleccionar equipo
     </h1>
 
-    lista tabla (formulario): {{ listaTabla }}
-    
     <!-- Formulario para datos básicos -->
     <div class="flex flex-col sm:flex-row gap-4 justify-center sm:text-center my-4">
         <!-- Nombre -->
@@ -46,11 +44,6 @@
         
     </div>
 
-    <!-- Error de selección de equipo -->
-    <p v-if="erroresEstado.Equipo" class="text-red-500 text-sm text-left ">
-    {{ erroresEstado.Equipo }}
-    </p>
-    
     <!-- Lista de equipo audiovisual -->
     <TablaEquipo :lista=inventario.list select @update-list="(lista) => listaTabla = lista" />
         
@@ -160,7 +153,7 @@ async function submit() {
 async function crearNuevaSalida() {
     // Petición para crear nueva salida en API
     const { data, error } = await useFetch('/api/salidas', {
-        method: 'POST',
+        method: 'post',
         body: formData
     })
     
@@ -182,13 +175,9 @@ async function crearNuevaSalida() {
 */
 async function actualizarSalida() {
     // Petición para actualizar salida existente en API
-    // TO DO: Implementación parcial del API para Salidas PATCH. Ver notas en /api/salidas/index.patch.js
     const { data, error } = await useFetch(`/api/salidas/${idLista.value}`, {
-        method: 'PATCH',
-        body: {
-            Id: idLista.value,
-            ...formData
-        }
+        method: 'patch',
+        body: formData
     })
     
     if(error.value) 
