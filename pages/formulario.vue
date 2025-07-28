@@ -6,6 +6,13 @@
 
     <!-- Formulario para datos básicos -->
     <div class="flex flex-col sm:flex-row gap-4 justify-center sm:text-center my-4">
+
+        <div class="flex flex-col sm:flex-row gap-4 mt-5" >
+            <UButton color="success" variant="outline" size="lg" icon="i-mdi-keyboard-return" to="/" class="cursor-pointer" @click="crearBorrador" >
+                Regresar a Inicio
+            </UButton>
+        </div>
+
         <!-- Nombre -->
         <div class="sm:basis-auto px-4">
             <UFormField label="Nombre de responsable" name="responsable" :error="erroresEstado.Responsable">
@@ -43,6 +50,11 @@
         </div>
         
     </div>
+
+    <!-- Error de selección de equipo -->
+    <p v-if="erroresEstado.Equipo" class="text-red-500 text-sm text-left ">
+        {{ erroresEstado.Equipo }}
+    </p>
 
     <!-- Lista de equipo audiovisual -->
     <TablaEquipo :lista=inventario.list select @update-list="(lista) => listaTabla = lista" />
@@ -114,20 +126,19 @@ const erroresEstado = reactive({
 */
 // Guardar información de la selección del equipo en localStorage (objeto 'listaTabla')
 async function submit() {
-  localStorage.setItem('preliminar-lista', JSON.stringify(listaTabla.value))
-
-  const datosParaValidar = {
-    Responsable: formData.Responsable,
-    Fecha: fechaComputed.value,
-    Usos: usosComputed.value,
-    Equipo: listaEquipo.value,
-  }
-
-  const result = formularioSchema.safeParse(datosParaValidar)
-
+    
+    const datosParaValidar = {
+        Responsable: formData.Responsable,
+        Fecha: fechaComputed.value,
+        Usos: usosComputed.value,
+        Equipo: listaEquipo.value,
+    }
+    
+    const result = formularioSchema.safeParse(datosParaValidar)
+    
     // Limpiar errores previos
     Object.keys(erroresEstado).forEach(key => erroresEstado[key] = null)
-
+    
     // Si no es válido, mostrar errores
     if (!result.success) {
         result.error.issues.forEach(error => {
@@ -136,15 +147,22 @@ async function submit() {
         })
         return
     }
-
+    
+    localStorage.setItem('preliminar-lista', JSON.stringify(listaTabla.value))
+    
     // Validación OK, continuar
     if (isUpdate.value)
-        actualizarSalida()
+    actualizarSalida()
     else
-        crearNuevaSalida()
+    crearNuevaSalida()
 }
 
-
+function crearBorrador(){
+    localStorage.setItem('preliminar-lista', JSON.stringify(listaTabla.value))
+    localStorage.setItem('preliminar-fecha', calendar.value)
+    localStorage.setItem('preliminar-motivo', formData.Usos)
+    localStorage.setItem('preliminar-responsable', formData.Responsable)
+}
 
 /**
 * Envia los datos recopilados para crear un registro de "Salida" en base de datos.
@@ -197,22 +215,21 @@ onMounted(async () => {
     // Obtener Id de la salida en localStorage (solo para actualizaciones)
     idLista.value = localStorage.getItem('preliminar-id')
     isUpdate.value = idLista.value ? true : false
-    
+
     // En caso de actualización, establecer ciertos valores del formulario
-    if(isUpdate.value) {
-        // Lista de equipo seleccionado (objeto que representa los índices del equipo seleccionado)
-        listaTabla.value = localStorage.getItem('preliminar-lista') ? JSON.parse( localStorage.getItem('preliminar-lista') ) : {}
-        
-        // Fecha de la "Salida"
-        const fechaDB = localStorage.getItem('preliminar-fecha') ? new Date( localStorage.getItem('preliminar-fecha') ) : undefined
-        calendar.value = fechaDB ? new CalendarDate(fechaDB.getFullYear(), fechaDB.getMonth() + 1, fechaDB.getDate() + 1) : calendar.value
-        
-        // Usos o motivo
-        usos.value = localStorage.getItem('preliminar-motivo') ? localStorage.getItem('preliminar-motivo').split(',') : usos.value
-        
-        // Nombre de responsable
-        formData.Responsable = localStorage.getItem('preliminar-responsable') ? localStorage.getItem('preliminar-responsable') : formData.Responsable
-    }
+
+    // Lista de equipo seleccionado (objeto que representa los índices del equipo seleccionado)
+    listaTabla.value = localStorage.getItem('preliminar-lista') ? JSON.parse( localStorage.getItem('preliminar-lista') ) : {}
+    
+    // Fecha de la "Salida"
+    const fechaDB = localStorage.getItem('preliminar-fecha') ? new Date( localStorage.getItem('preliminar-fecha') ) : undefined
+    calendar.value = fechaDB ? new CalendarDate(fechaDB.getFullYear(), fechaDB.getMonth() + 1, fechaDB.getDate() + 1) : calendar.value
+    
+    // Usos o motivo
+    usos.value = localStorage.getItem('preliminar-motivo') ? localStorage.getItem('preliminar-motivo').split(',') : usos.value
+    
+    // Nombre de responsable
+    formData.Responsable = localStorage.getItem('preliminar-responsable') ? localStorage.getItem('preliminar-responsable') : formData.Responsable
 
 })
 </script>

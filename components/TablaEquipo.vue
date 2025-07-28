@@ -7,6 +7,7 @@
             </div>
         </div>
         
+        <!-- Modo seleccionar equipo -->
         <UTable v-if="!soloVisualizacion" :data="lista" :columns="columnas" v-model:row-selection="rowSelection" @select="onSelect" v-model:global-filter="filtroGlobal" v-model:sorting="sorting" sticky class="flex-1 cursor-pointer pointer max-h-[70vh] table-fixed w-full" resizable>
             <!-- Columna "Imagen" -->
             <template #Imagen-cell="{ row }">
@@ -15,8 +16,9 @@
                 </div>
             </template>
         </UTable>
+
         <!-- Modo visualización -->
-        <UTable v-else :data="lista" :columns="columnas" sticky resizable class="flex-1 max-h-[70vh] table-fixed w-full rounded-lg overflow-hidden bg-gray-900 text-gray-200 shadow-md border border-gray-700 [&_thead]:bg-gray-800 [&_tbody_tr:hover]:bg-gray-800/50 [&_td]:border-gray-700 [&_th]:border-gray-700" color="gray" variant="subtle">
+        <UTable v-else :data="lista" :columns="columnas" sticky resizable class="overflow-y-auto flex-1 w-full rounded-lg overflow-hidden bg-gray-900 text-gray-200 shadow-md border border-gray-700 [&_thead]:bg-gray-800 [&_tbody_tr:hover]:bg-gray-800/50 [&_td]:border-gray-700 [&_th]:border-gray-700" color="gray" variant="subtle">
             <!-- Columna "Imagen" -->
             <template #Imagen-cell="{ row }">
                 <div class="flex h-full ">
@@ -224,7 +226,33 @@ const assignColor = (uso) => {
 // }
 
 onMounted( async () => {
-    rowSelection.value = localStorage.getItem('preliminar-lista') ? JSON.parse( localStorage.getItem('preliminar-lista') ) : {}
+
+    // En caso de actualización, encontrar los valores de la tabla
+    if (localStorage.getItem('preliminar-equipo')) {
+        // Obtenemos los id del equipo audiovisual actual y lo borramos del localStorage
+        const equipoAudiovisual = localStorage.getItem('preliminar-equipo').split(",").map(Number)
+        localStorage.removeItem('preliminar-equipo')
+        
+        // Iteramos para encontrar los id's de la tabla
+        let i = 0
+        let j = 0
+        let tablaFinal = {}
+        for(const equipo of props.lista){
+            if (equipo.Id === equipoAudiovisual[j]){
+                tablaFinal[i] = true
+                j++
+            }
+            i++
+        }
+        localStorage.setItem('preliminar-lista', JSON.stringify(tablaFinal))
+        rowSelection.value = tablaFinal
+    } else{
+        // Obtener la lista del equipo audiovisual desde localStorage    
+        rowSelection.value = localStorage.getItem('preliminar-lista') ? JSON.parse( localStorage.getItem('preliminar-lista') ) : {}
+    }
+
+
+
 }
 
 )

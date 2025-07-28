@@ -32,7 +32,7 @@
         
         <!-- Botones -->
         <div class="flex sm:flex-row gap-4 justify-between items-center">
-            <UButton color="success" variant="outline" size="lg" icon="i-mdi-keyboard-return" to="/" class="justify-start cursor-pointer" @click="deleteLocalStorageIndex" >
+            <UButton color="success" variant="outline" size="lg" icon="i-mdi-keyboard-return" to="/" class="cursor-pointer justify-start" >
                 Regresar a Inicio
             </UButton>
             
@@ -55,6 +55,22 @@
             <!-- Lista de equipo audiovisual -->
             <TablaEquipo :lista=salida.list :soloVisualizacion="true" class="mb-8" />
         </div>
+
+        <!-- Botones (duplicados, solo por eficiencia del usuario al bajar y corroborar que todo está en orden) -->
+        <div class="flex sm:flex-row gap-4 justify-between items-center mb-10">
+            <ReturnIndex class="justify-start" />
+            
+            <div class="flex flex-col sm:flex-row gap-4">
+                <UButton color="success" variant="outline" size="lg" icon="i-mdi-pencil" to="/formulario" class="cursor-pointer" @click="setLocalStorage" >
+                    Editar salida
+                </UButton>
+                
+                <!-- Generar documento docx -->
+                <ExportDocx :salida="salida" text="Crear documento" icon="i-mdi-file-word" class="w-auto cursor-pointer" @click="deleteLocalStorage"/>
+            </div>
+
+        </div>
+
     </div>
     
 </template>
@@ -82,6 +98,11 @@ function setLocalStorage(){
     localStorage.setItem('preliminar-fecha', data.value.Fecha)
     localStorage.setItem('preliminar-motivo', data.value.Usos)
     localStorage.setItem('preliminar-responsable', data.value.Responsable)
+    // Iteracion para obtener id's del equipo audiovisual
+    let preliminarEquipo = []
+    for(const equipo of data.value.list)
+        preliminarEquipo.push(equipo.Id)
+    localStorage.setItem('preliminar-equipo', preliminarEquipo)
 }
 
 /**
@@ -99,20 +120,4 @@ function deleteLocalStorage(){
     localStorage.removeItem('preliminar-responsable')
 }
 
-/**
- * Borra datos sobre la salida en localStorage del navegador, incluido la lista preliminar
- * Los datos que se borran son:
- * - Id de la Salida
- * - Fecha
- * - Motivo o usos
- * - Nombre de responsable
- * - Lista preliminar de equipo seleccionado
- */
-function deleteLocalStorageIndex(){
-    localStorage.removeItem('preliminar-id')
-    localStorage.removeItem('preliminar-fecha')
-    localStorage.removeItem('preliminar-motivo')
-    localStorage.removeItem('preliminar-responsable')
-    localStorage.removeItem('preliminar-lista')
-}
 </script>

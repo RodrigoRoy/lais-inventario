@@ -27,41 +27,13 @@ const activeStepIndex = computed(() => {
   const index = steps.value.findIndex(step => step.to === route.path)
   return index
 })
+
+onMounted(() => {
+  // Elimina los datos almacenados en el local storage
+  localStorage.removeItem('preliminar-id')
+  localStorage.removeItem('preliminar-fecha')
+  localStorage.removeItem('preliminar-motivo')
+  localStorage.removeItem('preliminar-responsable')
+  localStorage.removeItem('preliminar-lista')
+})
 </script>
-
-<!-- <template>
-  <UApp>
-    <UNavigationMenu :items="navBar" class="w-full justify-center" />
-
-    <UContainer>
-      <NuxtPage />
-    </UContainer>
-  </UApp>
-</template>
-
-<script setup>
-// Opciones de navegación
-
-const navBar = ref([
-  {
-    label: 'Inicio',
-    icon: 'i-mdi-home',
-    to: '/',
-  },
-  {
-    label: 'Selección',
-    icon: 'i-mdi-video-input-component',
-    to: '/formulario',
-  },
-  {
-    label: 'Preliminar',
-    icon: 'i-mdi-clipboard-check-outline',
-    to: '/preliminar',
-  },
-  // {
-  //   label: 'Documento',
-  //   icon: 'i-mdi-file-document',
-  //   to: '/documento',
-  // },
-])
-</script> -->
