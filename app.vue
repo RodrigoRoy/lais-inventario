@@ -28,12 +28,4 @@ const activeStepIndex = computed(() => {
   return index
 })
 
-onMounted(() => {
-  // Elimina los datos almacenados en el local storage
-  localStorage.removeItem('preliminar-id')
-  localStorage.removeItem('preliminar-fecha')
-  localStorage.removeItem('preliminar-motivo')
-  localStorage.removeItem('preliminar-responsable')
-  localStorage.removeItem('preliminar-lista')
-})
 </script>

@@ -12,11 +12,13 @@
             </ul>
         </template>
 
-        <!-- SLOT: Acciones -->
+        <!-- SLOT: Acciones
+        TODO: Cambiar color a neutral o "inactivo" si ya pasó la fecha de la salida.
+        -->
         <template #Acciones-cell="{ row }">
             {{ row.original['Lista de equipo'] }}
             <UButton :to="`/preliminar?Id=${row.original.Id}`" icon="i-mdi-eye" size="sm" color="primary" variant="soft" class="ml-5" >
-            Ver detalles
+            Copiar detalles
             </UButton>
         </template>
 
@@ -25,6 +27,7 @@
 </template>
 
 <script setup>
+//  TO DO: Convertir salidaDB a props
 const { data: salidaDB } = await useFetch('api/salidas')
 
 // Adaptar los datos para la tabla

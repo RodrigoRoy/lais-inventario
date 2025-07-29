@@ -31,7 +31,7 @@ export default defineEventHandler(async (event) => {
     }
     
     // Lista parcial del equipo audiovisual. Incluye "Id" y "Nombre"
-    const listaEquipo = await $fetch(`${process.env.NOCODB_URL}/api/v2/tables/mxylas8z9l8ohr1/links/ccugy2tparkdkdi/records/${recordId}`, {
+    const listaEquipo = await $fetch(`${process.env.NOCODB_URL}/api/v2/tables/mxylas8z9l8ohr1/links/c4tp3pyfg9eihbf/records/${recordId}`, {
         headers: {
             'xc-token': process.env.NOCODB_TOKEN
         },

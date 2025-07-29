@@ -64,7 +64,7 @@ export default defineEventHandler(async (event) => {
   // 3. Actualizar por nuevos linked records
 
   // Obtener la lista actual de Linked Records (lista de equipo)
-  const linkedRecords = await $fetch(`${process.env.NOCODB_URL}/api/v2/tables/mxylas8z9l8ohr1/links/ccugy2tparkdkdi/records/${recordId}`, {
+  const linkedRecords = await $fetch(`${process.env.NOCODB_URL}/api/v2/tables/mxylas8z9l8ohr1/links/c4tp3pyfg9eihbf/records/${recordId}`, {
     headers: {
       'xc-token': process.env.NOCODB_TOKEN
     },
@@ -75,7 +75,7 @@ export default defineEventHandler(async (event) => {
   const toUnlinkRecords = linkedRecords.list
 
   // Petición para eliminar / unlink la lista de equipo actual
-  await $fetch(`${process.env.NOCODB_URL}/api/v2/tables/mxylas8z9l8ohr1/links/ccugy2tparkdkdi/records/${recordId}`, {
+  await $fetch(`${process.env.NOCODB_URL}/api/v2/tables/mxylas8z9l8ohr1/links/c4tp3pyfg9eihbf/records/${recordId}`, {
     headers: {
       'xc-token': process.env.NOCODB_TOKEN
     },
@@ -84,7 +84,7 @@ export default defineEventHandler(async (event) => {
   })
 
   // Agregar la nueva lista de equipo como Linked Records
-  const updateEquipo = await $fetch(`${process.env.NOCODB_URL}/api/v2/tables/mxylas8z9l8ohr1/links/ccugy2tparkdkdi/records/${recordId}`, {
+  const updateEquipo = await $fetch(`${process.env.NOCODB_URL}/api/v2/tables/mxylas8z9l8ohr1/links/c4tp3pyfg9eihbf/records/${recordId}`, {
       headers: {
           'xc-token': process.env.NOCODB_TOKEN
       },

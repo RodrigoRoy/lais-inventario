@@ -47,7 +47,7 @@ export default defineEventHandler(async (event) => {
     })
 
     // Agregar lista de equipo para Linked field
-    const updateEquipo = await $fetch(`${process.env.NOCODB_URL}/api/v2/tables/mxylas8z9l8ohr1/links/ccugy2tparkdkdi/records/${newSalida.Id}`, {
+    const updateEquipo = await $fetch(`${process.env.NOCODB_URL}/api/v2/tables/mxylas8z9l8ohr1/links/c4tp3pyfg9eihbf/records/${newSalida.Id}`, {
         headers: {
             'xc-token': process.env.NOCODB_TOKEN
         },
