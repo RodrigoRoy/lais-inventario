@@ -80,7 +80,7 @@
 const route = useRoute()
 
 // Información de base de datos
-const { data, error } = await useFetch(`/api/salidas/${route.query.Id}`)
+const { data } = await useFetch(`/api/salidas/${route.query.Id}`)
 
 // Referencia a la Salida en base de datos
 const salida = ref(data.value)

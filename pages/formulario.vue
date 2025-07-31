@@ -152,9 +152,9 @@ async function submit() {
     
     // Validación OK, continuar
     if (isUpdate.value)
-    actualizarSalida()
+        actualizarSalida()
     else
-    crearNuevaSalida()
+        crearNuevaSalida()
 }
 
 function crearBorrador(){
@@ -176,7 +176,7 @@ async function crearNuevaSalida() {
     })
     
     if(error.value) 
-    throw createError({ statusCode: error.statusCode, statusText: error.statusText, statusMessage: 'Database error' })
+        throw createError({ statusCode: error.statusCode, statusText: error.statusText, statusMessage: 'Database error' })
     
     // Reenviar a vista preliminar
     await navigateTo({

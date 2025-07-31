@@ -32,11 +32,26 @@
 
     </div>
 
-    <HistorialSalidas/>
+    <HistorialSalidas :salidas="salidasRecientes" />
   </section>
 </template>
 
 <script setup>
+// Salidas recientes para componente de historial de salidas
+const { data } = await useFetch('/api/salidas')
+
+// Adaptar los datos para la tabla
+function salidaDB(){
+  if (!data.value?.list) return []
+  
+  return data.value.list.map((item) => ({
+    ...item,
+    Usos: item.Usos ? item.Usos.split(',') : [],
+  }))
+}
+
+const salidasRecientes = ref(salidaDB())
+
 const existeListaPreliminar = ref(false)
 
 // Elimina los datos almacenados del borrador para crear una nueva salida

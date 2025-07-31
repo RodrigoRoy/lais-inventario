@@ -226,19 +226,27 @@ const assignColor = (uso) => {
 // }
 
 onMounted( async () => {
+    /**
+     * Para que el equipo seleccionado aparezca en la tabla, existen dos maneras.
+     * La primera es cuando accedes desde /preliminar, ya que existe en local storage la información del equipo seleccionado en la tabla, solo es acceder a ese valor y ya quedó.
+     * La segunda es cuando accedes desde /index. pues es una copia, y entonces debes de obtener los id's del equipo para poder saber que lugar ocupan en la tabla y así se pueda seleccionar.
+     */
 
     // En caso de actualización, encontrar los valores de la tabla
     if (localStorage.getItem('preliminar-equipo')) {
         // Obtenemos los id del equipo audiovisual actual y lo borramos del localStorage
-        const equipoAudiovisual = localStorage.getItem('preliminar-equipo').split(",").map(Number)
+        const equipoSeleccionado = localStorage.getItem('preliminar-equipo').split(",").map(Number)
         localStorage.removeItem('preliminar-equipo')
         
         // Iteramos para encontrar los id's de la tabla
+        // Ejemplo: preliminar-equipo: 4,25
+        //          tablaFinal: { 5: true, 30: true }
+        // Donde 5 y 30 son índices de la tabla que corresponden a equipos con id 4 y 25.
         let i = 0
         let j = 0
         let tablaFinal = {}
         for(const equipo of props.lista){
-            if (equipo.Id === equipoAudiovisual[j]){
+            if (equipo.Id === equipoSeleccionado[j]){
                 tablaFinal[i] = true
                 j++
             }

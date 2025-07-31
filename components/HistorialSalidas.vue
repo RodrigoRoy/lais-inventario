@@ -5,20 +5,16 @@
 
     <UTable :columns="columnas" :data="salidas" sticky resizable class="rounded-lg border border-gray-200 shadow-md overflow-hidden text-start shadow-md border border-gray-700 [&_thead]:bg-gray-800 [&_tbody_tr:hover]:bg-gray-800/50 [&_td]:border-gray-700 [&_th]:border-gray-700" >
       
-        <!-- SLOT: Usos -->
         <template #Usos-cell="{ row }">
             <ul class="max-h-30 overflow-y-auto list-disc list-inside text-sm">
                 <li v-for="(uso, index) in row.original.Usos" :key="index">{{ uso }}</li>
             </ul>
         </template>
 
-        <!-- SLOT: Acciones
-        TODO: Cambiar color a neutral o "inactivo" si ya pasó la fecha de la salida.
-        -->
         <template #Acciones-cell="{ row }">
             {{ row.original['Lista de equipo'] }}
-            <UButton :to="`/preliminar?Id=${row.original.Id}`" icon="i-mdi-eye" size="sm" color="primary" variant="soft" class="ml-5" >
-            Copiar detalles
+            <UButton :to="'/formulario'" icon="i-mdi-file-document-arrow-right" size="sm" :color="new Date()<new Date(row.original.Fecha) ? 'primary' : 'neutral'" variant="soft" class="ml-5" @click="setLocalStorage(row.original)" >
+                {{ new Date()<new Date(row.original.Fecha) ? 'Editar ' : 'Copiar lista' }}
             </UButton>
         </template>
 
@@ -27,17 +23,8 @@
 </template>
 
 <script setup>
-//  TO DO: Convertir salidaDB a props
-const { data: salidaDB } = await useFetch('api/salidas')
-
-// Adaptar los datos para la tabla
-const salidas = computed(() => {
-  if (!salidaDB.value?.list) return []
-
-  return salidaDB.value.list.map((item) => ({
-    ...item,
-    Usos: item.Usos ? item.Usos.split(',') : [],
-  }))
+const props = defineProps({
+    salidas: { type: [Object], required: true  }
 })
 
 // Columnas para UTable
@@ -64,4 +51,34 @@ const columnas = [
     },
 ]
 
+/**
+ * Almacena datos sobre la salida en localStorage del navegador, para copiar una salida
+ * Los datos que se almacenan son:
+ * - Id de la Salida
+ * - Fecha
+ * - Motivo o usos
+ * - Nombre de responsable
+ */
+async function setLocalStorage(salidaActual){
+    // Información de base de datos
+    const data = await $fetch(`/api/salidas/${salidaActual.Id}`)
+
+    // Eliminar el ID si es actualización, insertar ID si es una copia
+    if (new Date()<new Date(salidaActual.Fecha) ) 
+        localStorage.setItem('preliminar-id', salidaActual.Id)
+    else 
+        localStorage.removeItem('preliminar-id')
+
+    localStorage.removeItem('preliminar-lista')
+    
+    // Guardar la información importante en el local storage, para copia
+    localStorage.setItem('preliminar-fecha', salidaActual.Fecha)
+    localStorage.setItem('preliminar-motivo', salidaActual.Usos)
+    localStorage.setItem('preliminar-responsable', salidaActual.Responsable)
+    // Iteracion para obtener id's del equipo audiovisual
+    let preliminarEquipo = []
+    for(const equipo of data.list)
+        preliminarEquipo.push(equipo.Id)
+    localStorage.setItem('preliminar-equipo', preliminarEquipo)
+}
 </script>

@@ -23,6 +23,7 @@ const steps = ref([
   { title: 'Preliminar', icon: 'i-mdi-clipboard-check-outline', to: '/preliminar' }
 ])
 
+// Sirve para actualizar correctamente el 'stepper' actual en los cambios de la url
 const activeStepIndex = computed(() => {
   const index = steps.value.findIndex(step => step.to === route.path)
   return index
