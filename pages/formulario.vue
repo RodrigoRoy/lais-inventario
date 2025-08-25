@@ -44,7 +44,7 @@
         <!-- Enviar información de salida a base de datos -->
         <div class="flex flex-col sm:flex-row gap-4 justify-end items-center mt-5">
             
-            <UButton color="success" variant="outline" size="lg" class="cursor-pointer" icon="mdi-cube-send" @click="submit">
+            <UButton color="success" variant="outline" size="lg" class="cursor-pointer" icon="mdi-cube-send" @click="submit" :loading="isLoading" loading-icon="i-mdi-cube-send">
                 {{ isUpdate ? 'Actualizar salida' : 'Crear salida' }}
             </UButton>
         </div>
@@ -66,13 +66,18 @@ import { CalendarDate, DateFormatter, getLocalTimeZone } from '@internationalize
 import { formularioSchema } from '~/utils/validacion.js'
 
 // Información de base de datos
-const { data: inventario } = await useFetch('/api/equipo')
+const { data: inventario } = await useFetch('/api/equipo', {
+    key: 'unique-key', // previene duplicación
+})
 
 // Determina si es actualización de una Salida o creación de una nueva Salida
 const isUpdate = ref(false)
 
 // Id de la Salida, según base de datos (en caso de actualización)
 const idLista = ref(null)
+
+// Determina si está cargando la información o no
+const isLoading = ref(false)
 
 // Lista del equipo audiovisual seleccionado. Según la definición en base de datos
 const listaEquipo = computed(() => {
@@ -126,6 +131,8 @@ const erroresEstado = reactive({
 */
 // Guardar información de la selección del equipo en localStorage (objeto 'listaTabla')
 async function submit() {
+
+    isLoading.value = true  // Cargando la información
     
     const datosParaValidar = {
         Responsable: formData.Responsable,
@@ -145,6 +152,7 @@ async function submit() {
             const field = error.path[0]
             erroresEstado[field] = error.message
         })
+        isLoading.value = false  // Terminó de cargar la información
         return
     }
     
@@ -169,10 +177,33 @@ function crearBorrador(){
 * Después, redirige a la siguiente página "Vista preliminar"
 */
 async function crearNuevaSalida() {
+  try {
+    // Petición para crear nueva salida en API
+    const data = await $fetch('/api/salidas', {
+      method: 'POST',
+      body: formData
+    })
+
+    await navigateTo({
+      path: '/preliminar',
+      query: {
+        Id: data.Id
+      }
+    })
+  } catch (error) {
+    throw createError({
+      statusCode: error?.statusCode || 500,
+      statusMessage: 'Database error'
+    })
+  }
+}
+
+/**
+async function crearNuevaSalida() {
     // Petición para crear nueva salida en API
     const { data, error } = await useFetch('/api/salidas', {
         method: 'post',
-        body: formData
+        body: formData,
     })
     
     if(error.value) 
@@ -186,16 +217,42 @@ async function crearNuevaSalida() {
         }
     })
 }
+*/
 
 /**
 * Envia los datos recopilados para actualizar un registro de "Salida" en base de datos.
 * Después, redirige a la siguiente página "Vista preliminar"
 */
 async function actualizarSalida() {
+    try {
+        // Petición para actualizar salida existente en API
+        const data = await $fetch(`/api/salidas/${idLista.value}`, {
+            method: 'PATCH',
+            body: formData
+        })
+        
+        // Reenviar a vista preliminar
+        await navigateTo({
+            path: '/preliminar',
+            query: {
+                Id: data.Id
+            }
+        })
+    } catch (error) {
+        console.error("error: ", error)
+        throw createError({
+            statusCode: error?.statusCode || 500,
+            statusMessage: 'Database error'
+        })
+    }
+}
+
+/**
+async function actualizarSalida() {
     // Petición para actualizar salida existente en API
     const { data, error } = await useFetch(`/api/salidas/${idLista.value}`, {
         method: 'patch',
-        body: formData
+        body: formData,
     })
     
     if(error.value) 
@@ -209,6 +266,7 @@ async function actualizarSalida() {
         }
     })
 }
+*/
 
 // Acciones que se efectuan inmediatamente en la página
 onMounted(async () => {

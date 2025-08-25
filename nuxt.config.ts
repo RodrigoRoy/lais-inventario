@@ -13,5 +13,13 @@ export default defineNuxtConfig({
     theme: {
       colors: ['primary', 'secondary', 'tertiary', 'info', 'success', 'warning', 'error']
     }
+  },
+  app: {
+    head: {
+      title: 'Salidas LAIS',
+      link: [
+        { rel: 'icon', type: 'image/svg+xml', href: '/perrito.svg' }
+      ]
+    }
   }
 })

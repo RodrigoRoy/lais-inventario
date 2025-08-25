@@ -255,6 +255,7 @@ onMounted( async () => {
         localStorage.setItem('preliminar-lista', JSON.stringify(tablaFinal))
         rowSelection.value = tablaFinal
     } else{
+        console.log("No encontro preliminar-equipo")
         // Obtener la lista del equipo audiovisual desde localStorage    
         rowSelection.value = localStorage.getItem('preliminar-lista') ? JSON.parse( localStorage.getItem('preliminar-lista') ) : {}
     }

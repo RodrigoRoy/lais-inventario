@@ -32,12 +32,12 @@
         
         <!-- Botones -->
         <div class="flex sm:flex-row gap-4 justify-between items-center">
-            <UButton color="success" variant="outline" size="lg" icon="i-mdi-keyboard-return" to="/" class="cursor-pointer justify-start" >
+            <UButton color="success" variant="outline" size="lg" icon="i-mdi-keyboard-return" to="/" class="cursor-pointer justify-start" @click="deleteLocalStorage">
                 Regresar a Inicio
             </UButton>
             
             <div class="flex flex-col sm:flex-row gap-4">
-                <UButton color="success" variant="outline" size="lg" icon="i-mdi-pencil" to="/formulario" class="cursor-pointer" @click="setLocalStorage" >
+                <UButton color="success" variant="outline" size="lg" icon="i-mdi-pencil" to="/formulario" class="cursor-pointer" @click="setLocalStorage" :loading="isLoading" loading-icon="i-mdi-pencil" >
                     Editar salida
                 </UButton>
                 
@@ -58,10 +58,9 @@
 
         <!-- Botones (duplicados, solo por eficiencia del usuario al bajar y corroborar que todo está en orden) -->
         <div class="flex sm:flex-row gap-4 justify-between items-center mb-10">
-            <ReturnIndex class="justify-start" />
             
             <div class="flex flex-col sm:flex-row gap-4">
-                <UButton color="success" variant="outline" size="lg" icon="i-mdi-pencil" to="/formulario" class="cursor-pointer" @click="setLocalStorage" >
+                <UButton color="success" variant="outline" size="lg" icon="i-mdi-pencil" to="/formulario" class="cursor-pointer" @click="setLocalStorage" :loading="isLoading" loading-icon="i-mdi-pencil" >
                     Editar salida
                 </UButton>
                 
@@ -79,11 +78,15 @@
 // Acceso a URL querie "Id"
 const route = useRoute()
 
-// Información de base de datos
-const { data } = await useFetch(`/api/salidas/${route.query.Id}`)
+// Información de base de datos - error es utilizado para UAlert
+const { data, error } = await useFetch(`/api/salidas/${route.query.Id}`, {
+})
 
 // Referencia a la Salida en base de datos
 const salida = ref(data.value)
+
+// Determina si está cargando la información o no
+const isLoading = ref(false)
 
 /**
  * Almacena datos sobre la salida en localStorage del navegador
@@ -94,6 +97,8 @@ const salida = ref(data.value)
  * - Nombre de responsable
  */
 function setLocalStorage(){
+    isLoading.value = true
+
     localStorage.setItem('preliminar-id', route.query.Id)
     localStorage.setItem('preliminar-fecha', data.value.Fecha)
     localStorage.setItem('preliminar-motivo', data.value.Usos)
@@ -118,6 +123,7 @@ function deleteLocalStorage(){
     localStorage.removeItem('preliminar-fecha')
     localStorage.removeItem('preliminar-motivo')
     localStorage.removeItem('preliminar-responsable')
+    localStorage.removeItem('preliminar-lista')
 }
 
 </script>

@@ -21,12 +21,12 @@
     <div class="flex flex-col sm:flex-row gap-4 justify-center">
       
       <!-- Botón de acción -->
-      <UButton to="/formulario" target="_self" size="xl" icon="i-mdi-plus-box" color="primary" @click="eliminaDatosBorrador">
+      <UButton to="/formulario" target="_self" size="xl" icon="i-mdi-plus-box" color="primary" @click="eliminaDatosBorrador" :loading="isLoadingNew" loading-icon="i-mdi-plus-box">
         Crear nueva salida
       </UButton>
       
       <!-- Botón de borrador. Se activa si existe un borrador en curso. -->
-      <UButton v-if="existeListaPreliminar" to="/formulario" color="success" variant="soft" size="lg" icon="i-mdi-pencil" class="cursor-pointer" >
+      <UButton v-if="existeListaPreliminar" to="/formulario" color="success" variant="soft" size="lg" icon="i-mdi-pencil" class="cursor-pointer" @click="isLoadingModificar=true" :loading="isLoadingModificar" loading-icon="i-mdi-pencil">
         Modificar borrador actual
       </UButton>
 
@@ -38,7 +38,13 @@
 
 <script setup>
 // Salidas recientes para componente de historial de salidas
-const { data } = await useFetch('/api/salidas')
+const { data } = await useFetch('/api/salidas', {
+  key: 'unique-key', 
+})
+
+// Determina si está cargando la información
+const isLoadingNew = ref(false)
+const isLoadingModificar = ref(false)
 
 // Adaptar los datos para la tabla
 function salidaDB(){
@@ -56,6 +62,8 @@ const existeListaPreliminar = ref(false)
 
 // Elimina los datos almacenados del borrador para crear una nueva salida
 function eliminaDatosBorrador(){
+    isLoadingNew.value = true
+
     localStorage.removeItem('preliminar-id')
     localStorage.removeItem('preliminar-fecha')
     localStorage.removeItem('preliminar-motivo')
