@@ -66,9 +66,7 @@ import { CalendarDate, DateFormatter, getLocalTimeZone } from '@internationalize
 import { formularioSchema } from '~/utils/validacion.js'
 
 // Información de base de datos
-const { data: inventario } = await useFetch('/api/equipo', {
-    key: 'unique-key', // previene duplicación
-})
+const { data: inventario } = await useFetch('/api/equipo')
 
 // Determina si es actualización de una Salida o creación de una nueva Salida
 const isUpdate = ref(false)
@@ -165,6 +163,9 @@ async function submit() {
         crearNuevaSalida()
 }
 
+/**
+ * Guarda la información actual en caso de regresar a la página inicial
+ */
 function crearBorrador(){
     localStorage.setItem('preliminar-lista', JSON.stringify(listaTabla.value))
     localStorage.setItem('preliminar-fecha', calendar.value)
@@ -199,27 +200,6 @@ async function crearNuevaSalida() {
 }
 
 /**
-async function crearNuevaSalida() {
-    // Petición para crear nueva salida en API
-    const { data, error } = await useFetch('/api/salidas', {
-        method: 'post',
-        body: formData,
-    })
-    
-    if(error.value) 
-        throw createError({ statusCode: error.statusCode, statusText: error.statusText, statusMessage: 'Database error' })
-    
-    // Reenviar a vista preliminar
-    await navigateTo({
-        path: '/preliminar',
-        query : {
-            Id: data.value.Id
-        }
-    })
-}
-*/
-
-/**
 * Envia los datos recopilados para actualizar un registro de "Salida" en base de datos.
 * Después, redirige a la siguiente página "Vista preliminar"
 */
@@ -247,27 +227,6 @@ async function actualizarSalida() {
     }
 }
 
-/**
-async function actualizarSalida() {
-    // Petición para actualizar salida existente en API
-    const { data, error } = await useFetch(`/api/salidas/${idLista.value}`, {
-        method: 'patch',
-        body: formData,
-    })
-    
-    if(error.value) 
-    throw createError({ statusCode: error.statusCode, statusText: error.statusText, statusMessage: 'Database error' })
-    
-    // Reenviar a vista preliminar
-    await navigateTo({
-        path: '/preliminar',
-        query : {
-            Id: data.value.Id
-        }
-    })
-}
-*/
-
 // Acciones que se efectuan inmediatamente en la página
 onMounted(async () => {
     // Obtener Id de la salida en localStorage (solo para actualizaciones)
@@ -280,7 +239,7 @@ onMounted(async () => {
     listaTabla.value = localStorage.getItem('preliminar-lista') ? JSON.parse( localStorage.getItem('preliminar-lista') ) : {}
     
     // Fecha de la "Salida"
-    const fechaDB = localStorage.getItem('preliminar-fecha') ? new Date( localStorage.getItem('preliminar-fecha') ) : undefined
+    const fechaDB = localStorage.getItem('preliminar-fecha') ? new Date( parseDate(localStorage.getItem('preliminar-fecha')) ) : undefined
     calendar.value = fechaDB ? new CalendarDate(fechaDB.getFullYear(), fechaDB.getMonth() + 1, fechaDB.getDate() + 1) : calendar.value
     
     // Usos o motivo

@@ -5,6 +5,10 @@
 
     <UTable :columns="columnas" :data="salidas" sticky resizable class="rounded-lg border border-gray-200 shadow-md overflow-hidden text-start shadow-md border border-gray-700 [&_thead]:bg-gray-800 [&_tbody_tr:hover]:bg-gray-800/50 [&_td]:border-gray-700 [&_th]:border-gray-700" >
       
+        <template #Fecha-cell="{ row }">
+            {{ formatoFecha(row.original.Fecha)  }}
+        </template>
+
         <template #Usos-cell="{ row }">
             <ul class="max-h-30 overflow-y-auto list-disc list-inside text-sm">
                 <li v-for="(uso, index) in row.original.Usos" :key="index">{{ uso }}</li>
@@ -13,11 +17,10 @@
 
         <template #Acciones-cell="{ row }">
             {{ row.original['Lista de equipo'] }}
-            <UButton :to="'/formulario'" icon="i-mdi-file-document-arrow-right" size="sm" :color="new Date()<new Date(row.original.Fecha) ? 'primary' : 'neutral'" variant="soft" class="ml-5" @click="setLocalStorage(row.original)" >
-                {{ new Date()<new Date(row.original.Fecha) ? 'Editar ' : 'Copiar lista' }}
+            <UButton :to="'/formulario'" icon="i-mdi-file-document-arrow-right" size="sm" :color="new Date() < new Date( parseDate( row.original.Fecha )) ? 'primary' : 'neutral'" variant="soft" class="ml-5" @click="setLocalStorage(row.original)" >
+                {{ new Date() < new Date( parseDate( row.original.Fecha )) ? 'Editar ' : 'Copiar lista' }}
             </UButton>
         </template>
-
     </UTable>
   </section>
 </template>

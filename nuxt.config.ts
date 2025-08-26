@@ -16,7 +16,7 @@ export default defineNuxtConfig({
   },
   app: {
     head: {
-      title: 'Salidas LAIS',
+      title: 'Formatos de salida de equipo audiovisual',
       link: [
         { rel: 'icon', type: 'image/svg+xml', href: '/perrito.svg' }
       ]

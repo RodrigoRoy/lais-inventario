@@ -33,14 +33,13 @@
     </div>
 
     <HistorialSalidas :salidas="salidasRecientes" />
+
   </section>
 </template>
 
 <script setup>
 // Salidas recientes para componente de historial de salidas
-const { data } = await useFetch('/api/salidas', {
-  key: 'unique-key', 
-})
+const { data } = await useFetch('/api/salidas')
 
 // Determina si está cargando la información
 const isLoadingNew = ref(false)

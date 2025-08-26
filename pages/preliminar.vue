@@ -37,7 +37,7 @@
             </UButton>
             
             <div class="flex flex-col sm:flex-row gap-4">
-                <UButton color="success" variant="outline" size="lg" icon="i-mdi-pencil" to="/formulario" class="cursor-pointer" @click="setLocalStorage" :loading="isLoading" loading-icon="i-mdi-pencil" >
+                <UButton color="success" variant="ghost" size="lg" icon="i-mdi-pencil" to="/formulario" class="cursor-pointer" @click="setLocalStorage" :loading="isLoading" loading-icon="i-mdi-pencil" >
                     Editar salida
                 </UButton>
                 
@@ -57,10 +57,10 @@
         </div>
 
         <!-- Botones (duplicados, solo por eficiencia del usuario al bajar y corroborar que todo está en orden) -->
-        <div class="flex sm:flex-row gap-4 justify-between items-center mb-10">
+        <div v-if="salida.list.length > 3" class="flex sm:flex-row gap-4 justify-end items-center mb-10">
             
             <div class="flex flex-col sm:flex-row gap-4">
-                <UButton color="success" variant="outline" size="lg" icon="i-mdi-pencil" to="/formulario" class="cursor-pointer" @click="setLocalStorage" :loading="isLoading" loading-icon="i-mdi-pencil" >
+                <UButton color="success" variant="ghost" size="lg" icon="i-mdi-pencil" to="/formulario" class="cursor-pointer" @click="setLocalStorage" :loading="isLoading" loading-icon="i-mdi-pencil" >
                     Editar salida
                 </UButton>
                 
@@ -79,8 +79,7 @@
 const route = useRoute()
 
 // Información de base de datos - error es utilizado para UAlert
-const { data, error } = await useFetch(`/api/salidas/${route.query.Id}`, {
-})
+const { data, error } = await useFetch(`/api/salidas/${route.query.Id}`)
 
 // Referencia a la Salida en base de datos
 const salida = ref(data.value)
