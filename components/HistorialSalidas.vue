@@ -17,7 +17,7 @@
 
         <template #Acciones-cell="{ row }">
             {{ row.original['Lista de equipo'] }}
-            <UButton :to="'/formulario'" icon="i-mdi-file-document-arrow-right" size="sm" :color="new Date() < new Date( parseDate( row.original.Fecha )) ? 'primary' : 'neutral'" variant="soft" class="ml-5" @click="setLocalStorage(row.original)" >
+            <UButton :to="'/formulario'" icon="i-mdi-file-document-arrow-right" size="sm" :color="new Date() < new Date( parseDate( row.original.Fecha )) ? 'primary' : 'neutral'" variant="soft" class="ml-5" @click="setLocalStorage(row.original)" :loading="isLoadingID === row.original.Id" loading-icon="i-mingcute-loading-fill">
                 {{ new Date() < new Date( parseDate( row.original.Fecha )) ? 'Editar ' : 'Copiar lista' }}
             </UButton>
         </template>
@@ -29,6 +29,9 @@
 const props = defineProps({
     salidas: { type: [Object], required: true  }
 })
+
+// ID de la salia que se desea editar
+const isLoadingID = ref('')
 
 // Columnas para UTable
 const columnas = [
@@ -63,6 +66,9 @@ const columnas = [
  * - Nombre de responsable
  */
 async function setLocalStorage(salidaActual){
+    // Asigna el ID del botón al que se le da clic
+    isLoadingID.value = salidaActual.Id
+
     // Información de base de datos
     const data = await $fetch(`/api/salidas/${salidaActual.Id}`)
 

@@ -8,7 +8,7 @@
     <div class="flex flex-col sm:flex-row gap-4 justify-center sm:text-center my-4">
 
         <div class="flex flex-col sm:flex-row gap-4 mt-5" >
-            <UButton color="success" variant="outline" size="lg" icon="i-mdi-keyboard-return" to="/" class="cursor-pointer" @click="crearBorrador" >
+            <UButton color="success" variant="outline" size="lg" icon="i-mdi-keyboard-return" to="/" class="cursor-pointer" @click="crearBorrador" :loading="isLoadingInicio" loading-icon="i-mingcute-loading-fill" >
                 Regresar a Inicio
             </UButton>
         </div>
@@ -44,7 +44,7 @@
         <!-- Enviar información de salida a base de datos -->
         <div class="flex flex-col sm:flex-row gap-4 justify-end items-center mt-5">
             
-            <UButton color="success" variant="outline" size="lg" class="cursor-pointer" icon="mdi-cube-send" @click="submit" :loading="isLoading" loading-icon="i-mdi-cube-send">
+            <UButton color="success" variant="outline" size="lg" class="cursor-pointer" icon="mdi-cube-send" @click="submit" :loading="isLoading" loading-icon="i-mingcute-loading-fill">
                 {{ isUpdate ? 'Actualizar salida' : 'Crear salida' }}
             </UButton>
         </div>
@@ -76,6 +76,7 @@ const idLista = ref(null)
 
 // Determina si está cargando la información o no
 const isLoading = ref(false)
+const isLoadingInicio = ref(false)
 
 // Lista del equipo audiovisual seleccionado. Según la definición en base de datos
 const listaEquipo = computed(() => {
@@ -167,6 +168,7 @@ async function submit() {
  * Guarda la información actual en caso de regresar a la página inicial
  */
 function crearBorrador(){
+    isLoadingInicio.value = true
     localStorage.setItem('preliminar-lista', JSON.stringify(listaTabla.value))
     localStorage.setItem('preliminar-fecha', calendar.value)
     localStorage.setItem('preliminar-motivo', formData.Usos)

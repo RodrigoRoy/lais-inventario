@@ -21,12 +21,12 @@
     <div class="flex flex-col sm:flex-row gap-4 justify-center">
       
       <!-- Botón de acción -->
-      <UButton to="/formulario" target="_self" size="xl" icon="i-mdi-plus-box" color="primary" @click="eliminaDatosBorrador" :loading="isLoadingNew" loading-icon="i-mdi-plus-box">
+      <UButton to="/formulario" target="_self" size="xl" icon="i-mdi-plus-box" color="primary" @click="eliminaDatosBorrador" :loading="isLoadingNew" loading-icon="i-mingcute-loading-fill">
         Crear nueva salida
       </UButton>
       
       <!-- Botón de borrador. Se activa si existe un borrador en curso. -->
-      <UButton v-if="existeListaPreliminar" to="/formulario" color="success" variant="soft" size="lg" icon="i-mdi-pencil" class="cursor-pointer" @click="isLoadingModificar=true" :loading="isLoadingModificar" loading-icon="i-mdi-pencil">
+      <UButton v-if="existeListaPreliminar" to="/formulario" color="success" variant="soft" size="lg" icon="i-mdi-pencil" class="cursor-pointer" @click="isLoadingModificar=true" :loading="isLoadingModificar" loading-icon="i-mingcute-loading-fill">
         Modificar borrador actual
       </UButton>
 
@@ -45,6 +45,12 @@ const { data } = await useFetch('/api/salidas')
 const isLoadingNew = ref(false)
 const isLoadingModificar = ref(false)
 
+// Versión reactiva con nueva sintaxis para Usos
+const salidasRecientes = ref(salidaDB())
+
+// Determina si existe un borrador activo (localStorage)
+const existeListaPreliminar = ref(false)
+
 // Adaptar los datos para la tabla
 function salidaDB(){
   if (!data.value?.list) return []
@@ -55,9 +61,6 @@ function salidaDB(){
   }))
 }
 
-const salidasRecientes = ref(salidaDB())
-
-const existeListaPreliminar = ref(false)
 
 // Elimina los datos almacenados del borrador para crear una nueva salida
 function eliminaDatosBorrador(){
