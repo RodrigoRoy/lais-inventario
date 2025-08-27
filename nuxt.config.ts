@@ -1,6 +1,11 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
+  /**runtimeConfig: {
+    public: {
+      baseURL: process.env.BASE_URL
+    }
+  },*/
   devtools: { enabled: true },
   modules: [
     '@nuxt/fonts', 
@@ -15,6 +20,7 @@ export default defineNuxtConfig({
     }
   },
   app: {
+    baseURL: "/salidas",
     head: {
       title: 'Formatos de salida de equipo audiovisual',
       link: [

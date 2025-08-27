@@ -43,7 +43,7 @@ function createDocument() {
     
     const categorias = {}
     for (const equipo of props.salida.list || []) {
-        const cat = equipo.Infraestructura || "Sin categoría"
+        const cat = equipo.Infraestructura || "Otros"
         if (!categorias[cat]) categorias[cat] = []
         categorias[cat].push(equipo)
     }
@@ -108,8 +108,8 @@ function createDocument() {
     
     let categoriasOrdenadas = Object.entries(categorias)
     .sort(([catA], [catB]) => {
-        if (catA === "Sin categoría") return 1; // "Sin categoría" va al final
-        if (catB === "Sin categoría") return -1;
+        if (catA === "Otros") return 1; // "Otros" va al final
+        if (catB === "Otros") return -1;
         return catA.localeCompare(catB); // Ordenar alfabéticamente las otras categorías
     });
 
