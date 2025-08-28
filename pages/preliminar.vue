@@ -32,17 +32,17 @@
         
         <!-- Botones -->
         <div class="flex sm:flex-row gap-4 justify-between items-center">
-            <UButton color="success" variant="outline" size="lg" icon="i-mdi-keyboard-return" to="/" class="cursor-pointer justify-start" @click="deleteLocalStorage" :loading="isLoadingInicio" loading-icon="i-mingcute-loading-fill" >
+            <UButton color="primary" variant="ghost" size="lg" icon="i-mdi-keyboard-return" to="/" class="justify-start" @click="deleteLocalStorage; isLoadingInicio=true" :loading="isLoadingInicio" loading-icon="i-mingcute-loading-fill" >
                 Regresar a Inicio
             </UButton>
             
             <div class="flex flex-col sm:flex-row gap-4">
-                <UButton color="success" variant="ghost" size="lg" icon="i-mdi-pencil" to="/formulario" class="cursor-pointer" @click="setLocalStorage" :loading="isLoading" loading-icon="i-mingcute-loading-fill" >
+                <UButton color="primary" variant="soft" size="lg" icon="i-mdi-pencil" to="/formulario" @click="setLocalStorage" :loading="isLoading" loading-icon="i-mingcute-loading-fill" >
                     Editar salida
                 </UButton>
                 
                 <!-- Generar documento docx -->
-                <ExportDocx :salida="salida" text="Crear documento" icon="i-mdi-file-word-outline" @click="deleteLocalStorage"/>
+                <ExportDocx :salida="salida" text="Crear documento" icon="i-mdi-file-word-outline" class="cursor-pointer" @click="deleteLocalStorage"/>
             </div>
 
         </div>
@@ -60,12 +60,12 @@
         <div v-if="salida.list.length > 3" class="flex sm:flex-row gap-4 justify-end items-center mb-10">
             
             <div class="flex flex-col sm:flex-row gap-4">
-                <UButton color="success" variant="ghost" size="lg" icon="i-mdi-pencil" to="/formulario" class="cursor-pointer" @click="setLocalStorage" :loading="isLoading" loading-icon="i-mingcute-loading-fill" >
+                <UButton color="primary" variant="soft" size="lg" icon="i-mdi-pencil" to="/formulario" @click="setLocalStorage" :loading="isLoading" loading-icon="i-mingcute-loading-fill" >
                     Editar salida
                 </UButton>
                 
                 <!-- Generar documento docx -->
-                <ExportDocx :salida="salida" text="Crear documento" icon="i-mdi-file-word-outline" @click="deleteLocalStorage" />
+                <ExportDocx :salida="salida" text="Crear documento" icon="i-mdi-file-word-outline" class="cursor-pointer" @click="deleteLocalStorage" />
             </div>
 
         </div>
@@ -119,7 +119,6 @@ function setLocalStorage(){
  * - Nombre de responsable
  */
 function deleteLocalStorage(){
-    isLoadingInicio.value = true
     localStorage.removeItem('preliminar-id')
     localStorage.removeItem('preliminar-fecha')
     localStorage.removeItem('preliminar-motivo')

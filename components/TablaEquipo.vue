@@ -7,22 +7,22 @@
             </div>
         </div>
         
-        <!-- Modo seleccionar equipo -->
+        <!-- Modo seleccionar equipo (formulario) -->
         <UTable v-if="!soloVisualizacion" :data="lista" :columns="columnas" v-model:row-selection="rowSelection" @select="onSelect" v-model:global-filter="filtroGlobal" v-model:sorting="sorting" sticky class="flex-1 cursor-pointer pointer max-h-[70vh] table-fixed w-full" resizable>
             <!-- Columna "Imagen" -->
             <template #Imagen-cell="{ row }">
                 <div class="flex h-full ">
-                    <img :src="row.original.Imagen ? row.original.Imagen[0].thumbnails.small.signedUrl : '/perrito.jpeg'" class="max-w-[200px] max-h-[200px] object-cover rounded shadow-sm"/>
+                    <img :src="row.original.Imagen ? row.original.Imagen[0].thumbnails.small.signedUrl : '/LogoLAIS.png'" class="max-w-[128px] max-h-[128px] object-cover rounded shadow-sm bg-white/80"/>
                 </div>
             </template>
         </UTable>
 
-        <!-- Modo visualización -->
-        <UTable v-else :data="lista" :columns="columnas" sticky resizable class="overflow-y-auto flex-1 w-full rounded-lg overflow-hidden bg-gray-900 text-gray-200 shadow-md border border-gray-700 [&_thead]:bg-gray-800 [&_tbody_tr:hover]:bg-gray-800/50 [&_td]:border-gray-700 [&_th]:border-gray-700" color="gray" variant="subtle">
+        <!-- Modo visualización (prelimianr) -->
+        <UTable v-else :data="lista" :columns="columnas" sticky resizable class="overflow-y-auto flex-1 w-full rounded-lg overflow-hidden text-purple-200 shadow-md border border-purple-700 [&_thead]:bg-purple-800 [&_tbody_tr:hover]:bg-purple-800/10 [&_td]:border-purple-700 [&_th]:border-purple-700" variant="subtle">
             <!-- Columna "Imagen" -->
             <template #Imagen-cell="{ row }">
                 <div class="flex h-full ">
-                    <img :src="row.original.Imagen ? row.original.Imagen[0].thumbnails.small.signedUrl : '/perrito.jpeg'" class="max-w-[200px] max-h-[200px] object-cover rounded shadow-sm"/>
+                    <img :src="row.original.Imagen ? row.original.Imagen[0].thumbnails.small.signedUrl : '/LogoLAIS.png'" class="max-w-[128px] max-h-[128px] object-cover rounded shadow-sm bg-white/80"/>
                 </div>
             </template>
         </UTable>
@@ -95,7 +95,7 @@ columnas.push(
     accessorKey: 'Uso',
     id: 'Uso',
     header: ({ column }) => getHeader(column, 'Uso'),
-    cell: ({ row }) => h('div', {class: `inline-flex items-center rounded-md ${assignColor(row.getValue('Uso'))} px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-gray-500/10 ring-inset`}, row.getValue('Uso') || 'Desconocido'),
+    cell: ({ row }) => h('div', {class: `inline-flex items-center rounded-md ${assignColor(row.getValue('Uso'))} px-2 py-1 text-xs text-neutral-900 font-medium text-gray-600 ring-1 ring-gray-500/10 ring-inset`}, row.getValue('Uso') || 'Desconocido'),
     width: 2200
 },
 {
@@ -258,10 +258,5 @@ onMounted( async () => {
         // Obtener la lista del equipo audiovisual desde localStorage    
         rowSelection.value = localStorage.getItem('preliminar-lista') ? JSON.parse( localStorage.getItem('preliminar-lista') ) : {}
     }
-
-
-
-}
-
-)
+})
 </script>

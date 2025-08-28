@@ -2,7 +2,7 @@
   <UApp>
 
     <div class="w-full max-w-lg mx-auto my-6">
-      <UStepper :items="steps" v-model="activeStepIndex" disabled size="xs" />
+      <UStepper :items="steps" v-model="activeStepIndex" disabled size="xs" color="secondary" />
     </div>
 
     <UContainer>

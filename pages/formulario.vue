@@ -8,7 +8,7 @@
     <div class="flex flex-col sm:flex-row gap-4 justify-center sm:text-center my-4">
 
         <div class="flex flex-col sm:flex-row gap-4 mt-5" >
-            <UButton color="success" variant="outline" size="lg" icon="i-mdi-keyboard-return" to="/" class="cursor-pointer" @click="crearBorrador" :loading="isLoadingInicio" loading-icon="i-mingcute-loading-fill" >
+            <UButton color="primary" variant="ghost" size="lg" icon="i-mdi-keyboard-return" to="/" class="cursor-pointer" @click="crearBorrador" :loading="isLoadingInicio" loading-icon="i-mingcute-loading-fill" >
                 Regresar a Inicio
             </UButton>
         </div>
@@ -44,7 +44,7 @@
         <!-- Enviar información de salida a base de datos -->
         <div class="flex flex-col sm:flex-row gap-4 justify-end items-center mt-5">
             
-            <UButton color="success" variant="outline" size="lg" class="cursor-pointer" icon="mdi-cube-send" @click="submit" :loading="isLoading" loading-icon="i-mingcute-loading-fill">
+            <UButton color="primary" variant="solid" size="lg" class="cursor-pointer" icon="mdi-cube-send" @click="submit" :loading="isLoading" loading-icon="i-mingcute-loading-fill">
                 {{ isUpdate ? 'Actualizar salida' : 'Crear salida' }}
             </UButton>
         </div>

@@ -3,7 +3,7 @@
   <section class="max-w-5xl mx-auto my-10 px-4">
     <h2 class="text-2xl font-semibold text-primary mb-8">Historial de salidas</h2>
 
-    <UTable :columns="columnas" :data="salidas" sticky resizable class="rounded-lg border border-gray-200 shadow-md overflow-hidden text-start shadow-md border border-gray-700 [&_thead]:bg-gray-800 [&_tbody_tr:hover]:bg-gray-800/50 [&_td]:border-gray-700 [&_th]:border-gray-700" >
+    <UTable :columns="columnas" :data="salidas" sticky resizable class="rounded-lg border border-purple-200 shadow-md overflow-hidden text-start shadow-md border border-purple-700 [&_thead]:bg-purple-800 [&_tbody_tr:hover]:bg-purple-800/50 [&_td]:border-purple-700 [&_th]:border-purple-700" >
       
         <template #Fecha-cell="{ row }">
             {{ formatoFecha(row.original.Fecha)  }}

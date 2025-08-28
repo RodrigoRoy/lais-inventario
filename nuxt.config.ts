@@ -24,7 +24,7 @@ export default defineNuxtConfig({
     head: {
       title: 'Formatos de salida de equipo audiovisual',
       link: [
-        { rel: 'icon', type: 'image/svg+xml', href: '/perrito.svg' }
+        { rel: 'icon', href: '/favicon.ico' }
       ]
     }
   }

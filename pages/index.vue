@@ -26,7 +26,7 @@
       </UButton>
       
       <!-- Botón de borrador. Se activa si existe un borrador en curso. -->
-      <UButton v-if="existeListaPreliminar" to="/formulario" color="success" variant="soft" size="lg" icon="i-mdi-pencil" class="cursor-pointer" @click="isLoadingModificar=true" :loading="isLoadingModificar" loading-icon="i-mingcute-loading-fill">
+      <UButton v-if="existeListaPreliminar" to="/formulario" color="primary" variant="soft" size="lg" icon="i-mdi-pencil" class="cursor-pointer" @click="isLoadingModificar=true" :loading="isLoadingModificar" loading-icon="i-mingcute-loading-fill">
         Modificar borrador actual
       </UButton>
 
