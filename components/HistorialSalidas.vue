@@ -31,7 +31,7 @@
 
         <template #Acciones-cell="{ row }">
             {{ row.original['Lista de equipo'] }}
-            <UButton :to="'/formulario'" icon="i-mdi-file-document-arrow-right" size="sm" :color="new Date() < new Date( row.original.Fecha ) ? 'primary' : 'neutral'" variant="soft" class="ml-5" @click="setLocalStorage(row.original)" :loading="isLoadingID === row.original.Id" loading-icon="i-mingcute-loading-fill">
+            <UButton icon="i-mdi-file-document-arrow-right" size="sm" :color="new Date() < new Date( row.original.Fecha ) ? 'primary' : 'neutral'" variant="soft" class="ml-5" @click="setLocalStorage(row.original)" :loading="isLoadingID === row.original.Id" loading-icon="i-mingcute-loading-fill">
                 {{ new Date() < new Date( row.original.Fecha ) ? 'Editar ' : 'Copiar lista' }}
             </UButton>
         </template>
@@ -103,8 +103,6 @@ async function setLocalStorage(salidaActual){
     else 
         localStorage.removeItem('preliminar-id')
 
-    localStorage.removeItem('preliminar-lista')
-    
     // Guardar la información importante en el local storage, para copia
     localStorage.setItem('preliminar-fecha', salidaActual.Fecha)
     localStorage.setItem('preliminar-motivo', salidaActual.Usos)
@@ -114,6 +112,11 @@ async function setLocalStorage(salidaActual){
     for(const equipo of data.list)
         preliminarEquipo.push(equipo.Id)
     localStorage.setItem('preliminar-equipo', preliminarEquipo)
+    await insertarLista(preliminarEquipo)
+
+    await navigateTo({
+      path: '/formulario',
+    })
 }
 
 onMounted( ()=>{

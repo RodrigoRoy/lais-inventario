@@ -231,33 +231,7 @@ onMounted( async () => {
      * La primera es cuando accedes desde /preliminar, ya que existe en local storage la información del equipo seleccionado en la tabla, solo es acceder a ese valor y ya quedó.
      * La segunda es cuando accedes desde /index. pues es una copia, y entonces debes de obtener los id's del equipo para poder saber que lugar ocupan en la tabla y así se pueda seleccionar.
      */
-
-    // En caso de actualización, encontrar los valores de la tabla
-    if (localStorage.getItem('preliminar-equipo')) {
-        //TODO: Mover esta funcion a utils/index.vue, utilizar la funcion en lugar de crear preliminar-equipo, y buscar donde se elimina la prelminar-lista para ver si es correcto eliminarla o simplemente la dejamos vacia ({})
-        // Obtenemos los id del equipo audiovisual actual y lo borramos del localStorage
-        const equipoSeleccionado = localStorage.getItem('preliminar-equipo').split(",").map(Number)
-        localStorage.removeItem('preliminar-equipo')
-        
-        // Iteramos para encontrar los id's de la tabla
-        // Ejemplo: preliminar-equipo: 4,25
-        //          tablaFinal: { 5: true, 30: true }
-        // Donde 5 y 30 son índices de la tabla que corresponden a equipos con id 4 y 25.
-        let i = 0
-        let j = 0
-        let tablaFinal = {}
-        for(const equipo of props.lista){
-            if (equipo.Id === equipoSeleccionado[j]){
-                tablaFinal[i] = true
-                j++
-            }
-            i++
-        }
-        localStorage.setItem('preliminar-lista', JSON.stringify(tablaFinal))
-        rowSelection.value = tablaFinal
-    } else{
-        // Obtener la lista del equipo audiovisual desde localStorage    
-        rowSelection.value = localStorage.getItem('preliminar-lista') ? JSON.parse( localStorage.getItem('preliminar-lista') ) : {}
-    }
+    rowSelection.value = localStorage.getItem('preliminar-lista') ? JSON.parse( localStorage.getItem('preliminar-lista') ) : {}
+    
 })
 </script>

@@ -21,12 +21,12 @@
     <div class="flex flex-col sm:flex-row gap-4 justify-center">
       
       <!-- Botón de acción -->
-      <UButton to="/formulario" target="_self" size="xl" icon="i-mdi-plus-box" color="primary" @click="eliminaDatosBorrador" :loading="isLoadingNew" loading-icon="i-mingcute-loading-fill">
+      <UButton target="_self" size="xl" icon="i-mdi-plus-box" color="primary" @click="eliminaDatosBorrador" :loading="isLoadingNew" loading-icon="i-mingcute-loading-fill">
         Crear nueva salida
       </UButton>
       
       <!-- Botón de borrador. Se activa si existe un borrador en curso. -->
-      <UButton v-if="existeListaPreliminar" to="/formulario" color="primary" variant="soft" size="lg" icon="i-mdi-pencil" class="cursor-pointer" @click="isLoadingModificar=true" :loading="isLoadingModificar" loading-icon="i-mingcute-loading-fill">
+      <UButton v-if="existeListaPreliminar" color="primary" variant="soft" size="lg" icon="i-mdi-pencil" class="cursor-pointer" @click="navegarBorrador" :loading="isLoadingModificar" loading-icon="i-mingcute-loading-fill">
         Modificar borrador actual
       </UButton>
 
@@ -61,9 +61,15 @@ function salidaDB(){
   }))
 }
 
+async function navegarBorrador(){
+  isLoadingModificar.value = true
+  await navigateTo({
+    path: '/formulario',
+  })
+}
 
 // Elimina los datos almacenados del borrador para crear una nueva salida
-function eliminaDatosBorrador(){
+async function eliminaDatosBorrador(){
     isLoadingNew.value = true
 
     localStorage.removeItem('preliminar-id')
@@ -71,6 +77,10 @@ function eliminaDatosBorrador(){
     localStorage.removeItem('preliminar-motivo')
     localStorage.removeItem('preliminar-responsable')
     localStorage.removeItem('preliminar-lista')
+
+    await navigateTo({
+      path: '/formulario',
+    })
 }
 
 onMounted(() => {

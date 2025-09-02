@@ -21,7 +21,7 @@
                 </div>
                 <div>
                     <p class="font-medium text-gray-500">Fecha</p>
-                    <p class="text-lg font-semibold text-gray-800 dark:text-gray-200">{{ formatoFecha (salida.Fecha ) }}</p>
+                    <p class="text-lg font-semibold text-gray-800 dark:text-gray-200">{{ formatoFecha(salida.Fecha ) }}</p>
                 </div>
                 <div>
                     <p class="font-medium text-gray-500">Motivo<span v-if="salida.Usos.split(',').length > 1">s</span></p>
@@ -37,7 +37,7 @@
             </UButton>
             
             <div class="flex flex-col sm:flex-row gap-4">
-                <UButton color="primary" variant="soft" size="lg" icon="i-mdi-pencil" to="/formulario" @click="setLocalStorage" :loading="isLoading" loading-icon="i-mingcute-loading-fill" >
+                <UButton color="primary" variant="soft" size="lg" icon="i-mdi-pencil" @click="setLocalStorage" :loading="isLoading" loading-icon="i-mingcute-loading-fill" >
                     Editar salida
                 </UButton>
                 
@@ -60,7 +60,7 @@
         <div v-if="salida.list.length > 3" class="flex sm:flex-row gap-4 justify-end items-center mb-10">
             
             <div class="flex flex-col sm:flex-row gap-4">
-                <UButton color="primary" variant="soft" size="lg" icon="i-mdi-pencil" to="/formulario" @click="setLocalStorage" :loading="isLoading" loading-icon="i-mingcute-loading-fill" >
+                <UButton color="primary" variant="soft" size="lg" icon="i-mdi-pencil" @click="setLocalStorage" :loading="isLoading" loading-icon="i-mingcute-loading-fill" >
                     Editar salida
                 </UButton>
                 
@@ -96,7 +96,7 @@ const isLoadingInicio = ref(false)
  * - Motivo o usos
  * - Nombre de responsable
  */
-function setLocalStorage(){
+async function setLocalStorage(){
     isLoading.value = true
 
     localStorage.setItem('preliminar-id', route.query.Id)
@@ -108,6 +108,11 @@ function setLocalStorage(){
     for(const equipo of data.value.list)
         preliminarEquipo.push(equipo.Id)
     localStorage.setItem('preliminar-equipo', preliminarEquipo)
+    await insertarLista(preliminarEquipo)
+
+    await navigateTo({
+      path: '/formulario',
+    })
 }
 
 /**
