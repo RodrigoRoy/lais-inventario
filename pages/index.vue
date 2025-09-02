@@ -38,6 +38,10 @@
 </template>
 
 <script setup>
+definePageMeta({
+  colorMode: 'dark',
+})
+
 // Salidas recientes para componente de historial de salidas
 const { data } = await useFetch('/api/salidas')
 

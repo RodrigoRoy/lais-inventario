@@ -1,5 +1,5 @@
 <template>
-  <UApp :class="$colorMode.className">
+  <UApp>
 
     <div class="w-full max-w-lg mx-auto my-6">
       <UStepper :items="steps" v-model="activeStepIndex" disabled size="xs" color="secondary" />
@@ -13,7 +13,6 @@
 </template>
 
 <script setup>
-
 const route = useRoute()
 
 // Define los pasos con títulos e íconos

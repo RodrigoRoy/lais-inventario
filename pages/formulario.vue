@@ -62,6 +62,10 @@
 </template>
 
 <script setup>
+definePageMeta({
+  colorMode: 'dark',
+})
+
 import { CalendarDate, DateFormatter, getLocalTimeZone } from '@internationalized/date'
 import { formularioSchema } from '~/utils/validacion.js'
 

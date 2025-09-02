@@ -75,6 +75,10 @@
 </template>
 
 <script setup>
+definePageMeta({
+  colorMode: 'dark',
+})
+
 // Acceso a URL querie "Id"
 const route = useRoute()
 
