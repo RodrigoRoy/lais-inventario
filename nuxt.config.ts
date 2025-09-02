@@ -12,6 +12,7 @@ export default defineNuxtConfig({
     '@nuxt/icon', 
     '@nuxt/image', 
     '@nuxt/ui',
+    '@nuxtjs/color-mode'
   ],
   css: ['@/assets/css/main.css'],
   ui: {
@@ -27,5 +28,9 @@ export default defineNuxtConfig({
         { rel: 'icon', href: '/favicon.ico' }
       ]
     }
-  }
+  },
+   colorMode: {
+    preference: 'dark', // Establece el tema oscuro por defecto
+    fallback: 'light',  // Tema claro como fallback si no hay preferencia
+  },
 })

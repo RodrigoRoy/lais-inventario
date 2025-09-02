@@ -31,7 +31,7 @@ const logoMoraBase64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGkAAABeCA
  */
 function formatoFecha(){
     let fecha = props.salida.Fecha
-    const date = new Date(parseDate(fecha))
+    const date = new Date(fecha)
     return date.toLocaleDateString('es-ES', {
         day: '2-digit',
         month: 'long',

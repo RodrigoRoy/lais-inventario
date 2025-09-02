@@ -113,7 +113,7 @@ const usosComputed = computed(() => {
 const formData = reactive({
     Fecha: fechaComputed,
     Usos: usosComputed,
-    Responsable: 'Felipe Morales Leal',
+    Responsable: '',
     Equipo: listaEquipo
 })
 
@@ -170,7 +170,7 @@ async function submit() {
 function crearBorrador(){
     isLoadingInicio.value = true
     localStorage.setItem('preliminar-lista', JSON.stringify(listaTabla.value))
-    localStorage.setItem('preliminar-fecha', calendar.value)
+    localStorage.setItem('preliminar-fecha', calendar.value )
     localStorage.setItem('preliminar-motivo', formData.Usos)
     localStorage.setItem('preliminar-responsable', formData.Responsable)
 }
@@ -221,7 +221,6 @@ async function actualizarSalida() {
             }
         })
     } catch (error) {
-        console.error("error: ", error)
         throw createError({
             statusCode: error?.statusCode || 500,
             statusMessage: 'Database error'
@@ -241,8 +240,8 @@ onMounted(async () => {
     listaTabla.value = localStorage.getItem('preliminar-lista') ? JSON.parse( localStorage.getItem('preliminar-lista') ) : {}
     
     // Fecha de la "Salida"
-    const fechaDB = localStorage.getItem('preliminar-fecha') ? new Date( parseDate(localStorage.getItem('preliminar-fecha')) ) : undefined
-    calendar.value = fechaDB ? new CalendarDate(fechaDB.getFullYear(), fechaDB.getMonth() + 1, fechaDB.getDate() + 1) : calendar.value
+    const fechaDB = localStorage.getItem('preliminar-fecha') ? new Date( localStorage.getItem( 'preliminar-fecha' ) ) : undefined
+    calendar.value = fechaDB ? new CalendarDate(fechaDB.getFullYear(), fechaDB.getMonth() + 1, fechaDB.getDate()) : calendar.value
     
     // Usos o motivo
     usos.value = localStorage.getItem('preliminar-motivo') ? localStorage.getItem('preliminar-motivo').split(',') : usos.value

@@ -18,7 +18,7 @@
         </UTable>
 
         <!-- Modo visualización (prelimianr) -->
-        <UTable v-else :data="lista" :columns="columnas" sticky resizable class="overflow-y-auto flex-1 w-full rounded-lg overflow-hidden text-purple-200 shadow-md border border-purple-700 [&_thead]:bg-purple-800 [&_tbody_tr:hover]:bg-purple-800/10 [&_td]:border-purple-700 [&_th]:border-purple-700" variant="subtle">
+        <UTable v-else :data="lista" :columns="columnas" sticky resizable class="overflow-all-auto  flex-1 w-full rounded-lg  text-purple-200 shadow-md border border-purple-700 [&_thead]:bg-purple-800 [&_tbody_tr:hover]:bg-purple-800/10 [&_td]:border-purple-700 [&_th]:border-purple-700" variant="subtle">
             <!-- Columna "Imagen" -->
             <template #Imagen-cell="{ row }">
                 <div class="flex h-full ">
@@ -234,6 +234,7 @@ onMounted( async () => {
 
     // En caso de actualización, encontrar los valores de la tabla
     if (localStorage.getItem('preliminar-equipo')) {
+        //TODO: Mover esta funcion a utils/index.vue, utilizar la funcion en lugar de crear preliminar-equipo, y buscar donde se elimina la prelminar-lista para ver si es correcto eliminarla o simplemente la dejamos vacia ({})
         // Obtenemos los id del equipo audiovisual actual y lo borramos del localStorage
         const equipoSeleccionado = localStorage.getItem('preliminar-equipo').split(",").map(Number)
         localStorage.removeItem('preliminar-equipo')

@@ -21,7 +21,7 @@
                 </div>
                 <div>
                     <p class="font-medium text-gray-500">Fecha</p>
-                    <p class="text-lg font-semibold text-gray-800 dark:text-gray-200">{{ salida.Fecha }}</p>
+                    <p class="text-lg font-semibold text-gray-800 dark:text-gray-200">{{ formatoFecha (salida.Fecha ) }}</p>
                 </div>
                 <div>
                     <p class="font-medium text-gray-500">Motivo<span v-if="salida.Usos.split(',').length > 1">s</span></p>
