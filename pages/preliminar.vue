@@ -13,7 +13,7 @@
     <div v-else class="space-y-6">
         
         <!-- Información general -->
-        <div class="bg-muted-foreground/5 rounded-lg p-6 border border-muted-foreground/10">
+        <div class="bg-muted-foreground/5 rounded-lg p-6 border border-muted-foreground/10 border-purple-500">
             <div class="grid md:grid-cols-3 gap-4 text-sm text-gray-600">
                 <div>
                     <p class="font-medium text-gray-500">Responsable</p>
@@ -53,11 +53,11 @@
             </h2>
             
             <!-- Lista de equipo audiovisual -->
-            <TablaEquipo :lista=salida.list :soloVisualizacion="true" class="mb-8" />
+            <TablaEquipo :lista=salida.list :soloVisualizacion="true" class="mb-20" />
         </div>
 
         <!-- Botones (duplicados, solo por eficiencia del usuario al bajar y corroborar que todo está en orden) -->
-        <div v-if="salida.list.length > 3" class="flex sm:flex-row gap-4 justify-end items-center mb-10">
+        <div v-if="salida.list.length > 3" class="flex sm:flex-row gap-4 justify-end items-center mb-10 -mt-10">
             
             <div class="flex flex-col sm:flex-row gap-4">
                 <UButton color="primary" variant="soft" size="lg" icon="i-mdi-pencil" class="cursor-pointer" @click="setLocalStorage" :loading="isLoading" loading-icon="i-mingcute-loading-fill" >

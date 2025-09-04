@@ -3,16 +3,25 @@
 
         <div v-if="!soloVisualizacion" class="flex pr-4 pt-4 border-b border-accented">
             <div class="flex flex-col md:flex-row items-center gap-4 mb-4">
-                <UInput v-model="filtroGlobal" icon="i-mdi-magnify" class="max-w-sm" placeholder="Buscar equipo..." ></UInput>
+                <UInput v-model="filtroGlobal" icon="i-mdi-magnify" class="max-w-sm" placeholder="Buscar equipo..." color="primary" highlight >
+                    <template v-if="filtroGlobal?.length" #trailing> <UButton color="red" outlined size="md" icon="i-lucide-circle-x" aria-label="Clear input" @click="filtroGlobal = ''" class="cursor-pointer" /></template>
+                </UInput>
             </div>
         </div>
         
         <!-- Modo seleccionar equipo (formulario) -->
-        <UTable v-if="!soloVisualizacion" :data="lista" :columns="columnas" v-model:row-selection="rowSelection" @select="onSelect" v-model:global-filter="filtroGlobal" v-model:sorting="sorting" sticky class="flex-1 cursor-pointer pointer max-h-[70vh] table-fixed w-full" resizable v-model:column-visibility="columnVisibility">
+        <UTable v-if="!soloVisualizacion" :data="lista" :columns="columnas" v-model:row-selection="rowSelection" @select="onSelect" v-model:global-filter="filtroGlobal" v-model:sorting="sorting" sticky class="flex-1 cursor-pointer max-h-[70vh] table-fixed w-full" :class="isMobile ?  'border border-purple-300 border-[0.5px]' : ''" resizable v-model:column-visibility="columnVisibility">
             <!-- Columna "Imagen" -->
             <template #Imagen-cell="{ row }">
                 <div class="flex h-full ">
                     <img :src="row.original.Imagen ? row.original.Imagen[0].thumbnails.small.signedUrl : '/LogoLAIS.png'" class="max-w-[128px] max-h-[128px] object-cover rounded shadow-sm bg-white/80"/>
+                </div>
+            </template>
+
+            <!-- Columna Nombre -->
+            <template #Nombre-cell="{ row }">
+                <div :class="isMobile ? 'whitespace-normal break-words' : 'truncate'">
+                    {{ row.original.Nombre }}
                 </div>
             </template>
         </UTable>
@@ -25,6 +34,7 @@
                     <img :src="row.original.Imagen ? row.original.Imagen[0].thumbnails.small.signedUrl : '/LogoLAIS.png'" class="max-w-[128px] max-h-[128px] object-cover rounded shadow-sm bg-white/80"/>
                 </div>
             </template>
+            
             <!-- Columna Nombre -->
             <template #Nombre-cell="{ row }">
                 <div :class="isMobile ? 'whitespace-normal break-words' : 'truncate'">
@@ -147,7 +157,7 @@ if(props.inventario) columnas.push
 // Composable que reacciona al tamaño de la pantalla.
 const { isMobile } = useIsMobile()
 // Columnas que queremos ver en mobile
-const mobileVisibleColumns = props.soloVisualizacion ? ['Nombre', 'Imagen'] : ['Imagen', 'Uso']
+const mobileVisibleColumns = ['Nombre', 'Imagen']
 /**
  * Estado reactivo de visibilidad de las columnas. Requiere 3 parámetros:
  * - isMobile -> Estado reactivo para saber si es mobile o desktop

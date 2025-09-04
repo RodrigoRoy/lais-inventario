@@ -16,7 +16,7 @@
         <!-- Nombre -->
         <div class="sm:basis-auto px-4">
             <UFormField label="Nombre de responsable" name="responsable" :error="erroresEstado.Responsable">
-                <UInput v-model="formData.Responsable" placeholder="Nombre" />
+                <UInput v-model="formData.Responsable" placeholder="Nombre" color="primary" highlight />
             </UFormField>
         </div>
         
@@ -24,7 +24,7 @@
         <div class="sm:basis-auto px-4">
             <UFormField label="Fecha de salida" :error="erroresEstado.Fecha">
                 <UPopover>
-                    <UButton color="neutral" variant="subtle" icon="i-mdi-calendar">
+                    <UButton variant="subtle" icon="i-mdi-calendar" class="cursor-pointer border border-purple-500 text-neutral">
                         {{ calendar ? dateFormat.format(calendar.toDate(getLocalTimeZone())) : 'Seleccionar fecha' }}
                     </UButton>
                     <template #content>
@@ -37,7 +37,7 @@
         <!-- Usos -->
         <div class="sm:basis-auto px-4">
             <UFormField label="Usos" name="usos" :error="erroresEstado.Usos">
-                <USelect v-model="usos" multiple :items="usosItems" class="w-48" required/>
+                <USelect v-model="usos" multiple :items="usosItems" class="w-48" color="primary" highlight required />
             </UFormField>
         </div>
         
@@ -57,7 +57,7 @@
     </p>
 
     <!-- Lista de equipo audiovisual -->
-    <TablaEquipo :lista=inventario.list select @update-list="(lista) => listaTabla = lista" />
+    <TablaEquipo :lista=inventario.list select @update-list="(lista) => listaTabla = lista" class="mb-20"/>
         
 </template>
 
