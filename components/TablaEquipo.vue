@@ -8,7 +8,7 @@
         </div>
         
         <!-- Modo seleccionar equipo (formulario) -->
-        <UTable v-if="!soloVisualizacion" :data="lista" :columns="columnas" v-model:row-selection="rowSelection" @select="onSelect" v-model:global-filter="filtroGlobal" v-model:sorting="sorting" sticky class="flex-1 cursor-pointer pointer max-h-[70vh] table-fixed w-full" resizable>
+        <UTable v-if="!soloVisualizacion" :data="lista" :columns="columnas" v-model:row-selection="rowSelection" @select="onSelect" v-model:global-filter="filtroGlobal" v-model:sorting="sorting" sticky class="flex-1 cursor-pointer pointer max-h-[70vh] table-fixed w-full" resizable v-model:column-visibility="columnVisibility">
             <!-- Columna "Imagen" -->
             <template #Imagen-cell="{ row }">
                 <div class="flex h-full ">
@@ -18,13 +18,20 @@
         </UTable>
 
         <!-- Modo visualización (prelimianr) -->
-        <UTable v-else :data="lista" :columns="columnas" sticky resizable class="overflow-all-auto  flex-1 w-full rounded-lg  text-purple-200 shadow-md border border-purple-700 [&_thead]:bg-purple-800 [&_tbody_tr:hover]:bg-purple-800/10 [&_td]:border-purple-700 [&_th]:border-purple-700" variant="subtle">
+        <UTable v-else :data="lista" :columns="columnas" sticky resizable class="overflow-all-auto  flex-1 w-full rounded-lg  text-purple-200 shadow-md border border-purple-700 [&_thead]:bg-purple-800 [&_tbody_tr:hover]:bg-purple-800/10 [&_td]:border-purple-700 [&_th]:border-purple-700" variant="subtle" v-model:column-visibility="columnVisibility">
             <!-- Columna "Imagen" -->
             <template #Imagen-cell="{ row }">
                 <div class="flex h-full ">
                     <img :src="row.original.Imagen ? row.original.Imagen[0].thumbnails.small.signedUrl : '/LogoLAIS.png'" class="max-w-[128px] max-h-[128px] object-cover rounded shadow-sm bg-white/80"/>
                 </div>
             </template>
+            <!-- Columna Nombre -->
+            <template #Nombre-cell="{ row }">
+                <div :class="isMobile ? 'whitespace-normal break-words' : 'truncate'">
+                    {{ row.original.Nombre }}
+                </div>
+            </template>
+
         </UTable>
     </div>
 </template>
@@ -123,7 +130,6 @@ columnas.push
 if(props.serie) columnas.push
 ({
     accessorKey: 'Número de serie', 
-    accessorKey: 'Número de serie', 
     id: 'Número de serie', 
     header: '# Serie',
     width: 200
@@ -137,6 +143,18 @@ if(props.inventario) columnas.push
     header: '# Inventario',
     width: 200
 })
+
+// Composable que reacciona al tamaño de la pantalla.
+const { isMobile } = useIsMobile()
+// Columnas que queremos ver en mobile
+const mobileVisibleColumns = props.soloVisualizacion ? ['Nombre', 'Imagen'] : ['Imagen', 'Uso']
+/**
+ * Estado reactivo de visibilidad de las columnas. Requiere 3 parámetros:
+ * - isMobile -> Estado reactivo para saber si es mobile o desktop
+ * - columnas -> Las columnas totales de la tabla
+ * - mobileVisibleColumns -> Un array con el nombre en 'accesorKey' de las columnas que se vean cuando sea mobile
+ */
+const { columnVisibility } = useResponsiveColumns( isMobile, columnas, mobileVisibleColumns )
     
 // Ordenación por defecto de la lista de equipo
 const sorting = ref([
@@ -154,8 +172,7 @@ const sorting = ref([
 function getHeader(column, label) {
     const isSorted = column.getIsSorted()
     
-    // TODO:Ordenar por booleanos la selección
-    if (label === "Seleccion") return "Selección"
+    if (label === "Seleccion") return isMobile.value ? '' : "Selección"
     
     return h(UButton, {
         color: 'neutral',

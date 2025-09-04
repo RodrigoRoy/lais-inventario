@@ -21,7 +21,7 @@
     <div class="flex flex-col sm:flex-row gap-4 justify-center">
       
       <!-- Botón de acción -->
-      <UButton target="_self" size="xl" icon="i-mdi-plus-box" color="primary" @click="eliminaDatosBorrador" :loading="isLoadingNew" loading-icon="i-mingcute-loading-fill">
+      <UButton target="_self" size="xl" icon="i-mdi-plus-box" class="cursor-pointer" color="primary" @click="eliminaDatosBorrador" :loading="isLoadingNew" loading-icon="i-mingcute-loading-fill">
         Crear nueva salida
       </UButton>
       

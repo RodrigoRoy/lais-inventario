@@ -3,37 +3,31 @@
   <section class="max-w-5xl mx-auto my-10 px-4">
     <h2 class="text-2xl font-semibold text-primary mb-8">Historial de salidas</h2>
 
-    <UTable :columns="columnas" :data="salidas" sticky resizable class="rounded-lg border border-purple-200 shadow-md overflow-x-auto text-start shadow-md border border-purple-700 [&_thead]:bg-purple-800 [&_tbody_tr:hover]:bg-purple-800/50 [&_td]:border-purple-700 [&_th]:border-purple-700" :column-visibility="columnVisibility" >
+    <UTable :columns="columnas" :data="salidas" sticky resizable class="rounded-lg border border-purple-200 shadow-md overflow-x-auto text-start shadow-md border border-purple-700 [&_thead]:bg-purple-800 [&_tbody_tr:hover]:bg-purple-800/50 [&_td]:border-purple-700 [&_th]:border-purple-700" v-model:column-visibility="columnVisibility" >
       
-        <template #Id-cell="{ row }">
-            <div class="md:block hidden" >
-                {{ row.original.Id }}
-            </div>
-        </template>
-
         <template #Fecha-cell="{ row }">
-            {{ formatoFecha(row.original.Fecha)  }}
+            <div v-if="isMobile">
+                {{ fechaCorta(row.original.Fecha) }}
+            </div>
+            <div v-else>
+                {{ formatoFecha(row.original.Fecha)  }}
+            </div>
         </template>
 
         <template #Usos-cell="{ row }">
-            <div class="md:block hidden" >
-                <ul class="max-h-30 overflow-y-auto list-disc list-inside text-sm">
-                    <li v-for="(uso, index) in row.original.Usos" :key="index">{{ uso }}</li>
-                </ul>
-            </div>
-        </template>
-
-        <template #Responsable-cell="{ row }">
-            <div class="md:block hidden" >
-                {{ row.original.Responsable }}
-            </div>
+            <ul class="max-h-30 overflow-y-auto list-disc list-inside text-sm">
+                <li v-for="(uso, index) in row.original.Usos" :key="index">{{ uso }}</li>
+            </ul>
         </template>
 
         <template #Acciones-cell="{ row }">
-            {{ row.original['Lista de equipo'] }}
-            <UButton icon="i-mdi-file-document-arrow-right" size="sm" :color="new Date() < new Date( row.original.Fecha ) ? 'primary' : 'neutral'" variant="soft" class="ml-5" @click="setLocalStorage(row.original)" :loading="isLoadingID === row.original.Id" loading-icon="i-mingcute-loading-fill">
-                {{ new Date() < new Date( row.original.Fecha ) ? 'Editar ' : 'Copiar lista' }}
-            </UButton>
+            <div class="flex items-center gap-3">
+                {{ row.original['Lista de equipo'] }}
+
+                <UButton icon="i-mdi-file-document-arrow-right" size="sm" :color="new Date() < new Date( row.original.Fecha ) ? 'primary' : 'neutral'" variant="soft" class="ml-5 cursor-pointer" @click="setLocalStorage(row.original)" :loading="isLoadingID === row.original.Id" loading-icon="i-mingcute-loading-fill">
+                    {{ new Date() < new Date( row.original.Fecha ) ? 'Editar ' : 'Copiar lista' }}
+                </UButton>
+            </div>
         </template>
     </UTable>
   </section>
@@ -44,14 +38,11 @@ const props = defineProps({
     salidas: { type: [Object], required: true  }
 })
 
-// Se considera una pantalla chica hasta 760px
-const isLarge = ref(false)
 // ID de la salia que se desea editar
 const isLoadingID = ref('')
-
 // Columnas para UTable
 const columnas = [
-   {
+    {
         accessorKey: 'Id', 
         header: 'ID' 
     },
@@ -73,14 +64,17 @@ const columnas = [
     },
 ]
 
-// Estado reactivo de visibilidad de las columnas
-const columnVisibility = reactive({
-    Id: true,
-    Fecha: true,         // Visible por defecto
-    Usos: true,
-    Responsable: true,
-    Acciones: true,       // Visible por defecto
-})
+// Composable que reacciona al tamaño de la pantalla.
+const { isMobile } = useIsMobile()
+// Columnas que queremos ver en mobile
+const mobileVisibleColumns = ['Fecha', 'Acciones']
+/**
+ * Estado reactivo de visibilidad de las columnas. Requiere 3 parámetros:
+ * - isMobile -> Estado reactivo para saber si es mobile o desktop
+ * - columnas -> Las columnas totales de la tabla
+ * - mobileVisibleColumns -> Un array con el nombre en 'accesorKey' de las columnas que se vean cuando sea mobile
+ */
+const { columnVisibility } = useResponsiveColumns( isMobile, columnas, mobileVisibleColumns )
 
 /**
  * Almacena datos sobre la salida en localStorage del navegador, para copiar una salida
@@ -119,14 +113,15 @@ async function setLocalStorage(salidaActual){
     })
 }
 
-onMounted( ()=>{
-    // Se asegura que tengamos la informacion de la pantalla en el lado del cliente
-    isLarge.value = window.innerWidth > 760;  // Pantallas grandes a partir de md
+/**
+ * Devuelve el formato correcto de las fechas
+ * @param fecha La fecha con formato AAAA-MM-DD
+ * @returns Una fecha con correcto formato para usar en Date: DD/MM/AAAA
+ */
+function fechaCorta( fecha ){
+    if(!fecha) return ""
+    let newFecha = fecha.split("-")
+    return newFecha[2] + "/" + newFecha[1] + "/" + newFecha[0]
+}
 
-    if ( !isLarge.value ){
-        columnVisibility.Id = false
-        columnVisibility.Usos = false
-        columnVisibility.Responsable = false
-    }
-})
 </script>

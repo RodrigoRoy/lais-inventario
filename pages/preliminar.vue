@@ -37,7 +37,7 @@
             </UButton>
             
             <div class="flex flex-col sm:flex-row gap-4">
-                <UButton color="primary" variant="soft" size="lg" icon="i-mdi-pencil" @click="setLocalStorage" :loading="isLoading" loading-icon="i-mingcute-loading-fill" >
+                <UButton color="primary" variant="soft" size="lg" icon="i-mdi-pencil" class="cursor-pointer" @click="setLocalStorage" :loading="isLoading" loading-icon="i-mingcute-loading-fill" >
                     Editar salida
                 </UButton>
                 
@@ -60,7 +60,7 @@
         <div v-if="salida.list.length > 3" class="flex sm:flex-row gap-4 justify-end items-center mb-10">
             
             <div class="flex flex-col sm:flex-row gap-4">
-                <UButton color="primary" variant="soft" size="lg" icon="i-mdi-pencil" @click="setLocalStorage" :loading="isLoading" loading-icon="i-mingcute-loading-fill" >
+                <UButton color="primary" variant="soft" size="lg" icon="i-mdi-pencil" class="cursor-pointer" @click="setLocalStorage" :loading="isLoading" loading-icon="i-mingcute-loading-fill" >
                     Editar salida
                 </UButton>
                 

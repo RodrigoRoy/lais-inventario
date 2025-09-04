@@ -103,7 +103,7 @@ const today = new Date()
 const calendar = shallowRef(new CalendarDate(today.getFullYear(), today.getMonth() + 1, today.getDate()))
 const fechaComputed = computed(() => {
     if (!calendar.value) return null
-    return new Date(calendar.value.year, calendar.value.month-1, calendar.value.day)
+    return new Date(calendar.value.year, calendar.value.month-1, calendar.value.day+1)
 })
 
 // Posibles valores de 'usos' para la salida de equipo
