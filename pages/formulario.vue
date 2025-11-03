@@ -57,7 +57,7 @@
     </p>
 
     <!-- Lista de equipo audiovisual -->
-    <TablaEquipo :lista=inventario.list select @update-list="(lista) => listaTabla = lista" class="mb-20"/>
+    <TablaEquipo inventario :lista=inventario.list select @update-list="(lista) => listaTabla = lista" class="mb-20"/>
         
 </template>
 

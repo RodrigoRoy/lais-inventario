@@ -124,8 +124,17 @@ columnas.push(
 )
 
 /**
-* ||| Sección de agregar columnas según props |||
-*/
+ * ||| Sección de agregar columnas según props |||
+ */
+
+ // Agregar columna inventario, según props
+if(props.inventario) columnas.push
+({
+    accessorKey: 'Número de inventario', 
+    id: 'Número de inventario', 
+    header: '# Inventario',
+    width: 200
+})
 
 // Agregar columna de imagen
 columnas.push
@@ -145,14 +154,6 @@ if(props.serie) columnas.push
     width: 200
 })
 
-// Agregar columna inventario, según props
-if(props.inventario) columnas.push
-({
-    accessorKey: 'Número de inventario', 
-    id: 'Número de inventario', 
-    header: '# Inventario',
-    width: 200
-})
 
 // Composable que reacciona al tamaño de la pantalla.
 const { isMobile } = useIsMobile()
