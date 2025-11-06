@@ -12,6 +12,17 @@
       Aplicación para la generación del formato de bienes en tránsito. Comienza una nueva salida para registrar los equipos seleccionados.
     </p>
 
+
+    <!-- Botones temporales para convertir csv a json de documentales y documentalistas -->
+    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+      <!-- Botón para documentales  -->
+      <UButton target="_self" size="xl" icon="i-mdi-code-json" class="cursor-pointer" color="secondary" to="documentalnewjson"> Documental </UButton>
+      
+      <!-- Botón para documentalistas  -->
+       <UButton target="_self" size="xl" icon="i-mdi-code-json" class="cursor-pointer" color="secondary" to="documentalistanewjson"> Documentalista </UButton>
+    </div>
+
+
     <!-- Icono decorativo grande -->
     <div class="flex justify-center">
       <UIcon name="i-mdi-package-variant-closed" class="text-primary text-6xl" />

@@ -255,3 +255,17 @@ onMounted(async () => {
 
 })
 </script>
+
+<!-- 
+
+*** PROPUESTA PARA SOLUCIÓN DE PROBLEMA DE LOCALSTORAGE ***
+
+npm install js-cookie
+
+import Cookies from 'js-cookie'
+
+// Guardar en cookie
+Cookies.set('preliminar-lista', JSON.stringify(listaTabla.value), { expires: 7 })
+
+// Obtener de cookie
+const lista = JSON.parse(Cookies.get('preliminar-lista')) -->
