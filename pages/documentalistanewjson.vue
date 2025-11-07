@@ -7,6 +7,7 @@
 
 <template>
     <h1 class="text-2xl font-bold mb-15">CSV → JSON (para Documentalista)</h1>
+    <UButton target="_self" size="xl" icon="i-mdi-code-json" class="cursor-pointer" color="secondary" to="documentalnewjson"> Documental </UButton>
     <div class="flex flex-col sm:flex-row gap-4 justify-center">
         
         <!-- <input type="file" accept=".csv" @change="handleFileUpload" class="mb-4" /> -->
@@ -45,7 +46,7 @@ const columnMap = {
     // "Fecha de defunción": "fechaDefuncion",
     //"Semblanza": "semblanza",  // no sirve tener ya semblanza sola
     "Semblanza": "semblanzaHTML",
-    "Documentales del periodo": "documentales",   // poner en lista
+    //"Documentales del periodo": "documentales",   // poner en lista
     "Colectivos": "colectivos",
     "Mención de responsabilidades": "mencionResponsabilidad",
     "Identificador (url)": "url",
@@ -94,7 +95,8 @@ function mapRowToModel(row) {
         semblanza: "",
         semblanzaHTML: "",
         mencionResponsabilidad: "",
-        documentales: row.documentales ? row.documentales.split('.').map(doc => doc.trim()) : [],
+        // documentales: row.documentales ? row.documentales.split('.').map(doc => doc.trim()) : [],
+        //documentales: [],
         colectivos: "",
         imagen: "",
         clipVideo: "",

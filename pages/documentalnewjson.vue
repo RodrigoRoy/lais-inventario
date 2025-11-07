@@ -9,6 +9,7 @@
 
 <template>
     <h1 class="text-2xl font-bold mb-15">CSV → JSON (para Documentales)</h1>
+    <UButton target="_self" size="xl" icon="i-mdi-code-json" class="cursor-pointer" color="secondary" to="documentalistanewjson"> Documentalista </UButton>
     <div class="flex flex-col sm:flex-row gap-4 justify-center">
         
         <!-- <input type="file" accept=".csv" @change="handleFileUpload" class="mb-4" /> -->
@@ -189,8 +190,8 @@ function mapRowToModel(row) {
         adicional: {
             imagen: "",
             clipVideo: "",
-            mujeres: [],
-            etiquetas: 'row.adicional.etiquetas' ? 'row.adicional.etiquetas'.split(',').map(doc => doc.trim()) : [],
+            //mujeres: [],
+            etiquetas: 'row.adicional.etiquetas' ? 'row.adicional.etiquetas'.split('.').map(doc => doc.trim()) : [],
             url: "",
             externalUrl: "",
             comentario: {
