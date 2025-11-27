@@ -14,13 +14,10 @@
 
 
     <!-- Botones temporales para convertir csv a json de documentales y documentalistas -->
-    <div class="flex flex-col sm:flex-row gap-4 justify-center">
-      <!-- Botón para documentales  -->
+    <!-- <div class="flex flex-col sm:flex-row gap-4 justify-center">
       <UButton target="_self" size="xl" icon="i-mdi-code-json" class="cursor-pointer" color="secondary" to="documentalnewjson"> Documental </UButton>
-      
-      <!-- Botón para documentalistas  -->
        <UButton target="_self" size="xl" icon="i-mdi-code-json" class="cursor-pointer" color="secondary" to="documentalistanewjson"> Documentalista </UButton>
-    </div>
+    </div> -->
 
 
     <!-- Icono decorativo grande -->
